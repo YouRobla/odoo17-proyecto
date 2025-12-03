@@ -1,0 +1,759 @@
+
+.room_dynamic_hover {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.ourRoomsbodyhead {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 37px;
+  /* identical to box height */
+
+  text-align: center;
+
+  color: #000000;
+}
+
+.ourRoomsbodyTitle {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  /* or 143% */
+
+  text-align: center;
+
+  color: #989898;
+}
+
+.hotelBg_jumb {
+  background-color: transparent;
+}
+
+.booking_form {
+  width: 431px;
+  border-radius: 10px;
+}
+
+.search_btn {
+  padding-left: 18px;
+  padding-right: 18px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: white solid 1px;
+  color: white;
+
+  &:hover {
+    background-color: white;
+    color: black;
+  }
+}
+
+#hotel_management_msg {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 37px;
+  color: white;
+}
+
+#basic_info_div {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.lds-hourglass {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-hourglass:after {
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  width: 0;
+  height: 0;
+  margin: 8px;
+  box-sizing: border-box;
+  border: 32px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-hourglass 1.2s infinite;
+  background: skyblue;
+}
+
+@keyframes lds-hourglass {
+  0% {
+    transform: rotate(0);
+    animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  }
+
+  50% {
+    transform: rotate(900deg);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  100% {
+    transform: rotate(1800deg);
+  }
+}
+
+// Multi Hotel Snippet
+.mh-card-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mh-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin: 16px;
+  min-height: 350px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  flex: 1 1 calc(25% - 32px);
+}
+
+.mh-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+}
+
+.mh-card-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+
+.mh-card-title {
+  font-size: 1.6em;
+  font-weight: 600;
+  color: #333;
+  margin: 12px 0;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.mh-card-address {
+  font-size: 1.1em;
+  color: #777;
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.mh-card-button {
+  background-color: #343a40;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.mh-card-button:hover {
+  background-image: linear-gradient(
+    90deg,
+    #00c0ff 0%,
+    #ffcf00 49%,
+    #fc4f4f 80%,
+    #00c0ff 100%
+  );
+  animation: slidebg 5s linear infinite;
+}
+
+.mh-switch-button {
+  background-color: #343a40;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.mh-switch-button:hover {
+  background-image: linear-gradient(
+    to right,
+    #e7484f,
+    #f68b1d,
+    #fced00,
+    #009e4f,
+    #00aac3,
+    #732982
+  );
+  animation: slidebg 2s linear infinite;
+}
+
+// Floating Switcher Tool
+.floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1;
+}
+
+@keyframes slidebg {
+  to {
+    background-position: 20vw;
+  }
+}
+
+.follow {
+  margin-top: 40px;
+}
+
+.follow a {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+@media (max-width: 992px) {
+  .mh-card {
+    flex: 1 1 calc(50% - 32px);
+  }
+}
+
+@media (max-width: 768px) {
+  .mh-card {
+    flex: 1 1 calc(100% - 32px);
+  }
+
+  .mh-card-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .mh-card-title {
+    font-size: 1.4em;
+  }
+
+  .mh-card-address {
+    font-size: 1em;
+  }
+
+  .mh-card-button {
+    padding: 10px 20px;
+  }
+}
+
+// CSS for floating Pop Menu
+
+:root {
+  --primary-timing-func: cubic-bezier(0.86, 0, 0.07, 1);
+  --button-radius: 60px;
+  --button-inner-ring-radius: 120px;
+  --button-outer-ring-radius: 100px;
+  --button-gradient: 135deg, rgba(244, 87, 116, 1) 0%,
+    rgba(229, 69, 139, 1) 100%;
+  --main-background-color: #edc1c2;
+  --menu-radius: calc(var(--button-radius) - 2px);
+  --menu-height: auto;
+  --menu-width: 245px;
+  --menu-border-radius: 10px;
+  --menu-bg-color: linear-gradient(45deg, #49a09d, #5f2c82);
+  --menu-timing-function: var(--primary-timing-func);
+  --menu-icon-size: 30px;
+  --close-icon-timing-function: var(--primary-timing-func);
+}
+
+.sticky-menu-container {
+  position: fixed;
+  right: calc(var(--button-radius));
+  bottom: calc(var(--button-radius));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticky-menu-container .outer-button {
+  position: absolute;
+  height: var(--button-radius, 70px);
+  width: var(--button-radius, 70px);
+  border-radius: 50%;
+  background: linear-gradient(45deg, #49a09d, #5f2c82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 10px 10px 18px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.sticky-menu-container .outer-button .icon-container {
+  height: inherit;
+  width: inherit;
+  border-radius: inherit;
+  display: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+  overflow: hidden;
+  position: relative;
+  cursor: inherit;
+}
+.sticky-menu-container .outer-button .close-icon {
+  transform: scale(0) rotate18px(-270deg);
+  opacity: 0;
+  // height: 25px;
+  // width: 25px;
+  position: absolute;
+  color: #ffffff;
+  font-size: 25px;
+}
+
+.sticky-menu-container .outer-button .arrow-icon {
+  // height: 25px;
+  // width: 25px;
+  position: absolute;
+  color: #ffffff;
+  font-size: 25px;
+}
+
+.sticky-menu-container .outer-button .arrow-icon.hiding-spot {
+  transform: translateX(calc(var(--button-radius) / -2))
+    translateY(calc(var(--button-radius) / 2));
+  opacity: 0;
+}
+
+.sticky-menu-container .outer-button .close-icon.show {
+  animation-duration: 1000ms;
+  animation-name: close-in;
+  animation-fill-mode: forwards;
+  animation-timing-function: var(--close-icon-timing-function);
+}
+
+.sticky-menu-container .outer-button .close-icon.hide {
+  animation-duration: 1000ms;
+  animation-name: close-out;
+  animation-timing-function: var(--close-icon-timing-function);
+}
+
+.sticky-menu-container .outer-button .arrow-icon.show {
+  opacity: 0;
+  animation-duration: 1000ms;
+  animation-name: arrow-in;
+  animation-fill-mode: forwards;
+  animation-timing-function: var(--close-icon-timing-function);
+  /*   animation-delay: 250ms; */
+}
+
+.sticky-menu-container .outer-button .arrow-icon.hide {
+  animation-duration: 1000ms;
+  animation-name: arrow-out;
+  animation-fill-mode: forwards;
+  animation-timing-function: var(--close-icon-timing-function);
+}
+
+.sticky-menu-container .outer-button::after,
+sticky-menu-container.outer-button::before {
+  position: absolute;
+  display: inline-block;
+  content: "";
+  height: var(--button-inner-ring-radius);
+  width: var(--button-inner-ring-radius);
+  border-radius: 50%;
+  background-color: transparent;
+  border: 0px solid rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.sticky-menu-container .outer-button.clicked::after {
+  animation-duration: 500ms;
+  animation-name: touch-click-inner;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.sticky-menu-container .outer-button::before {
+  height: var(--button-outer-ring-radius);
+  width: var(--button-outer-ring-radius);
+}
+
+.sticky-menu-container .outer-button.clicked::before {
+  animation-name: touch-click-outer;
+  animation-duration: 500ms;
+  animation-iteration-count: 1;
+  animation-delay: 250ms;
+}
+
+.sticky-menu-container .inner-menu {
+  position: absolute;
+  height: var(--menu-height);
+  width: var(--menu-width);
+  border-radius: var(--menu-border-radius);
+  background: var(--menu-bg-color);
+  /*   transform: translate(calc(-50% + var(--button-radius) / 2), calc(-55% - var(--button-radius) / 2)); */
+  transform: translateX(-91px) translateY(-169px);
+  transition: all 1000ms var(--primary-timing-func);
+  /*   transition-delay: 500ms; */
+  padding: 10px;
+  overflow: hidden;
+  box-shadow: 10px 10px 18px 5px rgba(0, 0, 0, 0.4);
+}
+
+.sticky-menu-container .inner-menu > ul {
+  height: 100%;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+
+.sticky-menu-container .inner-menu > .menu-list > .menu-item {
+  color: #ffffff;
+  // text-transform: uppercase;
+  // letter-spacing: 3px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.sticky-menu-container .inner-menu > .menu-list > .menu-item {
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.sticky-menu-container .inner-menu > .menu-list > .menu-item > .item-icon {
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sticky-menu-container
+  .inner-menu
+  > .menu-list
+  > .menu-item
+  > .item-icon
+  > svg {
+  height: var(--menu-icon-size);
+  width: var(--menu-icon-size);
+}
+
+.sticky-menu-container .inner-menu.closed {
+  height: var(--menu-radius);
+  width: var(--menu-radius);
+  border-radius: 50%;
+  padding: 0;
+  transform: translate(0, 0) !important; /* Closed position */
+  transition: all 1000ms var(--primary-timing-func);
+}
+
+// .sticky-menu-container .inner-menu > .menu-list > .menu-item > .item-text {
+//   opacity: 0;
+// }
+
+.sticky-menu-container
+  .inner-menu
+  > .menu-list
+  > .menu-item
+  > .item-text.text-in {
+  animation-duration: 1500ms;
+  animation-name: text-in;
+  animation-fill-mode: forwards;
+  animation-timing-function: var(--close-icon-timing-function);
+}
+
+.sticky-menu-container .inner-menu > .menu-list > .menu-item.text-hides {
+  animation-duration: 200ms;
+  animation-name: text-hides;
+  animation-fill-mode: forwards;
+  animation-timing-function: var(--close-icon-timing-function);
+}
+
+// Cart page Card z-index issue
+#o_cart_summary {
+  z-index: 0;
+}
+
+@keyframes touch-click-inner {
+  50% {
+    transform: scale(0.375);
+    border-width: 30px;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    border-width: 1px;
+    opacity: 0;
+  }
+}
+
+@keyframes touch-click-outer {
+  0% {
+    border-width: 10px;
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes close-in {
+  0% {
+    transform: scale(0) rotate(270deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes close-out {
+  0% {
+    transform: scale(1.1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(270deg);
+    opacity: 0;
+  }
+}
+
+@keyframes arrow-out {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(calc(var(--button-radius) / 1.5))
+      translateY(calc(var(--button-radius) / -1.5));
+  }
+}
+
+@keyframes arrow-in {
+  0% {
+    transform: translateX(calc(-1 * var(--button-radius)))
+      translateY(calc(var(--button-radius)));
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes text-in {
+  0% {
+    opcaity: 1;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes text-hides {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+#homepage_booking_panel {
+  padding: 20px;
+  margin: 1% auto;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  font-family: 'Arial', sans-serif;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+  .show{
+    display: block !important;
+  }
+  .search-config {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+  }
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  .custom-select {
+    position: relative;
+    width: 35%;
+  }
+  .date-conatiner{
+    flex-grow: 1;
+  }
+  #hotel_dropdown {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-item {
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  .dropdown-item:hover {
+    background-color: #f1f1f1;
+  }
+  .hotel-name {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .hotel-address {
+    font-size: 12px;
+    color: #888;
+  }
+  .label{
+    color: white;
+  }
+  .custom-select input:focus + .dropdown-content {
+    display: block;
+  }
+  .datetimepicker-input {
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .datetimepicker-input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  .travellers-container {
+    position: relative;
+    width: 25%;
+  }
+  #travellers-input {
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .travellers-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    z-index: 100;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .traveller-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .traveller-field label {
+    font-size: 14px;
+    color: #555;
+  }
+  .traveller-field input {
+    width: 60px;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+  }
+  button.btn {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  button.btn:hover {
+    background-color: #0056b3;
+  }
+
+  @media (max-width: 767px) {
+    .search-config {
+        flex-direction: column;
+    }
+
+    .form-control {
+        margin-bottom: 15px;
+    }
+
+    .travellers-container {
+        width: 100%;
+    }
+
+    #travellers-input {
+        width: 100%;
+    }
+
+    .travellers-dropdown {
+        width: 100%;
+    }
+
+    button.btn {
+        width: 100%;
+    }
+  }
+
+  @media (max-width: 991px) {
+    .search-config {
+        flex-direction: column;
+    }
+    .date-conatiner{
+      width: 100%;
+    }
+    .datetimepicker-input, .travellers-container, .custom-select{
+      width: 100%;
+    }
+  }
+}

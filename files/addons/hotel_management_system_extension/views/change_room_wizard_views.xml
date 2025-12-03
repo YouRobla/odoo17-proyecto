@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_change_room_wizard" model="ir.ui.view">
+        <field name="name">hotel.booking.line.change.room.wizard.form</field>
+        <field name="model">hotel.booking.line.change.room.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Room">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="booking_id" readonly="1" nolabel="1"/>
+                            - Change Room
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Current Booking Info">
+                            <field name="booking_line_id" readonly="1"/>
+                            <field name="current_room_id" readonly="1"/>
+                        </group>
+                        <group string="Change Period">
+                            <field name="change_start_date"/>
+                            <field name="change_end_date"/>
+                            <field name="total_nights" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="New Room Selection">
+                            <field name="new_room_id" 
+                                   domain="[('id', 'in', available_rooms)]"
+                                   options="{'no_create': True}"/>
+                            <field name="available_rooms" invisible="1"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="use_custom_price"/>
+                            <field name="custom_price" 
+                                   invisible="not use_custom_price"
+                                   placeholder="Enter custom price (0 is allowed)"/>
+                            <field name="estimated_total" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Additional Information">
+                        <field name="note" nolabel="1" placeholder="Reason for room change..."/>
+                    </group>
+                    
+                    <div class="alert alert-info" role="alert">
+                        <strong>Nota:</strong> Esto creará nuevas reservas separadas. 
+                        La reserva original se mantendrá hasta la fecha de cambio, 
+                        y se crearán nuevas reservas para el período de cambio y continuación si aplica.
+                    </div>
+                </sheet>
+                
+                <footer>
+                    <button name="action_confirm" string="Apply Room Change" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_change_room_wizard" model="ir.actions.act_window">
+        <field name="name">Change Room</field>
+        <field name="res_model">hotel.booking.line.change.room.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_change_room_wizard"/>
+    </record>
+
+</odoo>

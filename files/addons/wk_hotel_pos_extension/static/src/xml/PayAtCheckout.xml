@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<templates xml:space="preserve">
+    <t t-name="wk_hotel_pos_extension.PayAtCheckout" t-inherit="point_of_sale.PaymentScreenMethods" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('paymentmethods')]" position="after">
+            <div class="paymentlines d-flex flex-column" t-if="currentOrder.booking_id">
+                <h4 class="title-category pt-3 pb-2 px-3 m-0 bg-view border-bottom border-2">Hotel POS</h4>
+                <div class="button paymentmethod btn btn-light rounded-0 border-bottom" t-on-click="_confirmationPayAtCheckout"
+                    style="padding: 10px;background: #FAF9F6;border: solid 1px white;border-radius: 5px;font-size: 18px;">
+                    <div class="payment-method-display d-flex align-items-center flex-grow-1">
+                        <div>
+                            <i class="fa fa-sign-out" role="img" aria-label="Pay" title="Pay"></i>
+                        </div>
+                        <span class="payment-name">Pay at Checkout</span>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+    <t t-name="wk_hotel_pos_extension.PaymentScreen" t-inherit="point_of_sale.PaymentScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr='//t[@t-if="ui.isSmall"]//t[@t-call="point_of_sale.PaymentScreenValidate"]' position="replace">
+            <t t-if="!currentOrder.booking_id">
+                <t t-call="point_of_sale.PaymentScreenValidate" />
+            </t>
+        </xpath>
+        <xpath expr='//t[@t-else=""]//t[@t-call="point_of_sale.PaymentScreenValidate"]' position="replace">
+            <t t-if="!currentOrder.booking_id">
+                <t t-call="point_of_sale.PaymentScreenValidate" />
+            </t>
+        </xpath>
+    </t>
+</templates>

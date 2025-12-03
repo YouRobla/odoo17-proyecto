@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+    <record id="payment_confirmation_email_template" model="mail.template">
+        <field name="name">Payment Confirmation Email</field>
+        <field name="subject">Payment Confirmation</field>
+       
+        <field name="email_from">{{user.email_formatted}}</field>
+        <field name="model_id" ref="account.model_account_payment"/>
+        <field name="body_html"  type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <t t-if="object.reconciled_invoice_ids">
+                    <t t-set="payment" t-value="object.move_id" />
+                    <t t-set="name" t-value="object.move_id.invoice_user_id.name" />
+                </t>
+                <t t-else='' >
+                    <t t-set="payment" t-value="object.sale_order_id" />
+                    <t t-set="name" t-value="object.sale_order_id.user_id.name" />  
+                </t>
+                
+            <p>Dear <t t-esc="name"/>,</p>
+            <p>We are writing to confirm the payment for your Sale Order/Invoice <t t-esc='payment.name'/>
+                <t t-if= "object.state in ['in_process','paid']">
+                    has been successfully processed. Thank you for your payment.
+                </t>
+                <t t-else=''>
+                    has been failed
+                </t>      
+            </p>
+            <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
+            <p>Best regards, Your Company Name</p>
+           </div>
+        </field>
+    </record>
+</odoo>

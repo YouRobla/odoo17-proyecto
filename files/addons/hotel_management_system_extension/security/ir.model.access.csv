@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_booking_line_price_change_wizard_user,hotel.booking.line.price.change.wizard.user,model_hotel_booking_line_price_change_wizard,base.group_user,1,1,1,1
+access_hotel_booking_line_price_change_wizard_manager,hotel.booking.line.price.change.wizard.manager,model_hotel_booking_line_price_change_wizard,base.group_system,1,1,1,1
+access_hotel_booking_line_change_room_wizard_user,hotel.booking.line.change.room.wizard.user,model_hotel_booking_line_change_room_wizard,base.group_user,1,1,1,1

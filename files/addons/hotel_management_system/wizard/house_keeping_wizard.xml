@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="hotel_housekeeping_wizard" model="ir.ui.view">
+        <field name="name">Assign Housekeeping</field>
+        <field name="model">hotel.housekeeping.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Housekeeping">
+                <group>
+                    <field name="room_id" />
+                    <field name="state" />
+                    <field name="assign_to" />
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="create_housekeeping"
+                        class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

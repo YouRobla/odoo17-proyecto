@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id="view_hotel_add_rooms_wizard_form" model="ir.ui.view">
+            <field name="name">hotel.add.rooms.wizard.form</field>
+            <field name="model">hotel.add.rooms.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Add Rooms">
+                    <sheet>
+                        <group>
+                            <field name="room_ids" widget="many2many_tags" />
+                        </group>
+                        <footer>
+                            <button string="Add Rooms" type="object" name="action_add_rooms"
+                                class="btn-primary" />
+                            <button string="Cancel" class="btn-secondary" special="cancel" />
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

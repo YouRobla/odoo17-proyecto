@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record model="ir.ui.view" id="hotel_booking_view_tree">
+        <field name="name">hotel.booking.list</field>
+        <field name="model">hotel.booking</field>
+        <field name="priority" eval="20" />
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Hotel Booking" decoration-danger="status_bar == 'checkout'"
+                decoration-info="status_bar == 'confirm'" default_order="sequence_id desc, id">
+                <field name="sequence_id" />
+                <field name='partner_id' widget="res_partner_many2one" optional="show" />
+                <field name='user_id' widget="many2one_avatar_user" optional="show" />
+                <field name='check_in' />
+                <field name='check_out' />
+                <field name='status_bar' widget="badge" decoration-info="status_bar == 'initial'"
+                    decoration-warning="status_bar in ('allot')"
+                    decoration-success="status_bar == 'confirm'"
+                    decoration-danger="status_bar in ('checkout','cancel')" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hotel_booking_filter" model="ir.ui.view">
+        <field name="name">hotel.booking.list.select</field>
+        <field name="model">hotel.booking</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="15" />
+        <field name="arch" type="xml">
+            <search string="Search Sales Order">
+                <field name="sequence_id" />
+                <separator />
+                <filter string="Confirm" name="confirm" domain="[('status_bar','=','confirm')]" />
+                <filter string="Checkout" name="checkout"
+                    domain="[('status_bar','=','checkout')]" />
+                <filter string="Draft" name="draft" domain="[('status_bar','=','draft')]" />
+                <filter string="Cancelled" name="cancelled" domain="[('status_bar','=','cancel')]" />
+                <separator />
+                <filter string="Check in Date" name="filter_checkin_date" date="check_in" />
+                <filter string="Check out Date" name="filter_checkout_date" date="check_out" />
+                <separator />
+                <filter string="Sale Order Booking" name="filter_booking_sale_order"
+                    domain="[('booking_reference','=','sale_order')]" />
+                <filter string="Manual Booking" name="filter_booking_manual"
+                    domain="[('booking_reference','=','manual')]" />
+                <separator />
+                <filter string="Today Check in" name="checkin_today"
+                    domain="[('check_in', '=', context_today().strftime('%Y-%m-%d'))]" />
+                <filter string="Today Check out" name="checkout_today"
+                    domain="[('check_out', '=', context_today().strftime('%Y-%m-%d'))]" />
+                <filter string="Future Booking" name="booking_upcoming_all"
+                    domain="[('check_out', '&gt;', context_today().strftime('%Y-%m-%d'))]" />
+                <group expand="0" string="Group By">
+                    <filter string="Salesperson" name="salesperson" domain="[]"
+                        context="{'group_by': 'user_id'}" />
+                    <filter name="customer" string="Customer" domain="[]"
+                        context="{'group_by': 'partner_id'}" />
+                    <filter string="Check In" name="Check In" domain="[]"
+                        context="{'group_by': 'check_in'}" />
+                    <filter string="Check Out" name="Check Out" domain="[]"
+                        context="{'group_by': 'check_out'}" />
+                    <filter string="Booking Reference" name="Booking Reference" domain="[]"
+                        context="{'group_by': 'booking_reference'}" />
+                    <filter string="Status" name="booking_status" domain="[]"
+                        context="{'group_by': 'status_bar'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hotel_booking_calendar_view" model="ir.ui.view">
+        <field name="name">hotel.booking.view</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Booking" date_start="check_in" date_stop="check_out"
+                color="status_bar" hide_time="True" create="False"
+                mode="month" event_open_popup="True">
+                <field name="partner_id" avatar_field="image_1920" />
+                <field name="check_in" />
+                <field name="check_out" />
+                <field name="total_amount" widget="monetary" />
+            </calendar>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hotel_booking_view_form">
+        <field name="name">hotel.booking.form</field>
+        <field name="model">hotel.booking</field>
+        <field name="priority" eval="21" />
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Booking">
+                <header>
+                    <field name="invoice_count" invisible="1"/>
+                    <field name="is_show_create_invoice_btn" invisible="1"/>
+                    <field name="is_show_send_feedback_btn" invisible="1"/>
+                    <field name="via_agent" invisible="1"/>
+                    <field name="agent_invoice_id" invisible="1"/>
+                    <field name="show_create_bill_btn" invisible="1"/>
+
+                    <field name="status_bar" widget="statusbar"
+                        statusbar_visible="initial,confirm,allot,checkout" />
+
+                    <button name="action_confirm_booking" string="Confirm Booking" type="object"
+                        class="oe_highlight"
+                        invisible="status_bar != 'initial'" />
+
+                    <button name="allot_action" string="Allot Room"
+                        type="object" class="oe_highlight"
+                        invisible="status_bar != 'confirm'" />
+
+                    <button name="action_checkout" string="Checkout" type="object"
+                        class="oe_highlight"
+                        confirm="Do you want to checkout?"
+                        invisible="status_bar != 'allot'" />
+                    <button name="create_invoice" string="Create Invoice"
+                        type="object" class="oe_highlight"
+                        invisible="is_show_create_invoice_btn or status_bar != 'checkout' or invoice_count != 0"
+                    />
+                    <button name="send_feedback_btn" string="Send Feedback Mail"
+                        type="object" class=""
+                        invisible="not is_show_send_feedback_btn or status_bar != 'checkout' "
+                    />
+                    <button name="create_agent_bill" string="Create Agent Bill"
+                        type="object" class="oe_highlight"
+                        invisible="not (show_create_bill_btn and not agent_invoice_id and status_bar == 'checkout' and via_agent)"
+                    />
+                    <button name="action_booking_send" id="booking_send_by_email_primary"
+                        string="Send by Email" type="object" class="btn-secondary"
+                    />
+                    <button name="action_view_compute_bill" string="Print Bill"
+                        type="object" class=""
+                        invisible="status_bar not in ('checkout','allot')" />
+    
+                    <button name="%(action_view_cancel_booking)d" string="Cancel" type="action"
+                        invisible="status_bar not in ('initial', 'confirm')" />
+
+                    <button name="action_register_payment"
+                        type='object'
+                        class="oe_highlight o_wow"
+                        context="{'is_advance_payment_sale': True}"
+                        string='Advance Payment'
+                        invisible="status_bar in ['checkout', 'cancel']" />
+                </header>
+                
+                <sheet>
+                    <field name="status_bar" invisible="1"/>
+                    <field name="housekeeping_count" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_button_box" type="object" name="action_sale_order"
+                            icon="fa-bars">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sale Order</span>
+                            </div>
+                        </button>
+                        <button class="oe_inline oe_stat_button pr-2" name="action_add_service"
+                            type="object" invisible="status_bar != 'allot'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                                fill="currentColor" class="bi bi-shop-window me-2"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zm2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5z"></path>
+                            </svg>
+                            Add Services</button>
+
+                        <button class="oe_stat_button pr-2" icon="fa-pencil-square-o"
+                            name="hotel_invoice_view" type="object" invisible="invoice_count == 0"
+                        >
+                            <field name="invoice_count" widget="statinfo" string="Invoices" />
+
+                        </button>
+
+                        <button class="oe_button_box" type="object" name="action_show_house_keeping"
+                            icon="fa-home"
+                            invisible="status_bar != 'checkout' or housekeeping_count == 0">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">House Keeping</span>
+                            </div>
+                        </button>
+
+                        <button class="oe_button_box" type="object" name="action_show_agent_bill"
+                            icon="fa-user-secret" invisible="not agent_invoice_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Agent Bill</span>
+                            </div>
+                        </button>
+
+                        <button class="oe_stat_button"
+                            name="action_show_payment"
+                            icon="fa-credit-card"
+                            type="object">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_payment" />
+                                </span>
+                                <span>
+                                    Payments
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" />
+                    <div class="oe_title">
+                        <h1>
+                            <field name='sequence_id' readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="status_bar != 'initial'"
+                                required="True" />
+                            <field name="check_in" readonly="status_bar != 'initial'"
+                                required="True" />
+                            <field name="check_out" readonly="status_bar != 'initial'"
+                                required="True" />
+                            <field name="user_id" widget="many2one_avatar_user" />
+                        </group>
+                        <group>
+                            <field name="pricelist_id" readonly="status_bar != 'initial'" />
+                            <field name="currency_id" readonly="1" />
+                            <field name="booking_reference" readonly="1"
+                                required="True" />
+                            <field name="origin" invisible="booking_reference != 'other'" />
+                            <field name='hotel_id' required='1' readonly="status_bar not in ['initial', 'confirm']"/>
+                            <field name='via_agent' readonly="status_bar not in ['initial', 'confirm']"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Folio">
+
+                            <button name="action_add_rooms" type="object" string="Add Rooms" class="btn btn-success btn-sm" 
+                            invisible="status_bar != 'initial' or booking_line_ids"/>
+
+                            <field name='booking_line_ids' readonly="status_bar != 'initial'"
+                                nolabel="1" widget="one2many" mode="tree" required="True">
+                                <tree create="0">
+                                    <field name='booking_sequence_id' readonly='True' />
+                                    <field name='product_id'
+                                        domain="[('product_tmpl_id.is_room_type','=',True)]"
+                                        readonly='True' />
+                                    <field name='guest_info_ids' required="1" />
+                                    <field name='max_adult' />
+                                    <field name='max_child' />
+                                    <field name='price' readonly="False" />
+                                    <field name='description' readonly="False" widget="html" />
+                                    <field name="tax_ids" widget="many2many_tags"
+                                        options="{'no_create': True}"
+                                        context="{'search_view_ref': 'account.account_tax_view_search'}"
+                                        domain="[('type_tax_use','=','sale')]" />
+                                    <field name='booking_days' optional='hide' />
+                                    <field name="discount" groups="product.group_discount_per_so_line"/>
+                                    <field name='subtotal_price' />
+                                    <field name='guest_info_ids' optional="True"/>
+                                    <field name="status_bar" invisible="1"/>
+
+                                    <button
+                                        name="%(hotel_management_system.action_view_exchange_rooms)d"
+                                        invisible="status_bar != 'confirm'" type="action"
+                                        title="Exchange" string="Exchange Room"
+                                        class="oe_highlight" />
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" name="sale_total">
+                                <field name="amount_untaxed" string='Untaxed Amount'
+                                    widget='monetary'
+                                    options="{'currency_field': 'currency_id'}" />
+                                <field name="tax_amount" readonly="1" />
+
+                                <field name="paid_amount" widget="monetary" />
+                                <field name="balance_amount" widget="monetary" />
+
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="total_amount" />
+                                </div>
+                                <field name="total_amount" nolabel="1" readonly="1"
+                                    class="oe_subtotal_footer_separator" widget='monetary'
+                                    options="{'currency_field': 'currency_id'}" />
+                            </group>
+                            <div class="clearfix" />
+                        </page>
+
+                        <page string="Alloted Services" invisible="(not hotel_service_lines)">
+                            <field nolabel="1" name="hotel_service_lines">
+                                <tree create="0" delete="1">
+                                    <field name='sequence_id' optional='show' />
+                                    <field name="service_id" />
+                                    <field name="service_type" />
+                                    <field name="assign_to" widget="many2one_avatar_user"
+                                        optional='hide' />
+                                    <field name="note" optional='hide' />
+                                    <field name="product_id" optional='show'
+                                        invisible="service_type != 'paid'" />
+                                    <field name="amount" optional='show'
+                                        invisible="service_type != 'paid'" />
+                                    <field name="state" optional='show' />
+                                    <button name="action_completed" string="Mark as Done"
+                                        type="object"
+                                        class="oe_highlight"
+                                        invisible="state in ('done','cancel')" />
+                                    <button name="action_service_cancel" string="Cancel" class="btn-secondary" type="object" invisible="state in ('done','cancel')"/>    
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Customer Document">
+                            <field name='docs_ids' nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name" />
+                                    <field name="file" filename="file_name" />
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string='Agent Info' invisible='not via_agent'>
+                            <div class='d-flex justify-content-between' invisible='not via_agent'>
+                                <div>
+                                    <group>
+                                        <field name='agent_id' required='via_agent' />
+                                        <field name="commission_type" required='via_agent' />
+                                    </group>
+                                </div>
+                                <div>
+                                    <group>
+                                        <field name='agent_commission_amount'
+                                            invisible="not via_agent or commission_type == 'percentage'"
+                                            required="via_agent and commission_type == 'fixed'" />
+                                        <field name='agent_commission_percentage'
+                                            invisible="not via_agent or commission_type == 'fixed'"
+                                            required="via_agent and commission_type == 'percentage'" />
+                                    </group>
+                                </div>
+                            </div>
+                        </page>
+
+                        <page string='Extra Infos'>
+                            <group>
+                                <field name='booking_date' />
+                                <field name='booking_days' />
+                                <field name='description' />
+                                <field name="company_id" options="{'no_create': True}" />
+                            </group>
+                            <group invisible="status_bar not in ('cancel')">
+                                <field name='cancellation_reason' readonly='True' />
+                            </group>
+                        </page>
+                        
+                        <page groups="base.group_user" string="Ratings" invisible='not rating_ids'>
+                            <field name="rating_ids" widget="one2many" mode="tree">
+                                <tree string="Ratings" create="false" edit="false" sample="1" readonly="1">
+                                    <field name="create_date"/>
+                                    <field name="rated_partner_id" optional="show"/>
+                                    <field name="res_name" optional="show"/>
+                                    <field name="rating_text" decoration-danger="rating_text == 'ko'" decoration-warning="rating_text == 'ok'" decoration-success="rating_text == 'top'" class="fw-bold" widget="badge"/>
+                                    <field name="feedback"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="hotel_booking_view_pivot" model="ir.ui.view">
+        <field name="name">booking.report.pivot</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Booking Analysis" sample="1">
+                <field name="partner_id" type="col" />
+                <field name="check_in" interval="month" type="row" />
+                <field name="total_amount" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="hotel_booking_view_graph" model="ir.ui.view">
+        <field name="name">booking.report.graph</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Booking Analysis" type="line" sample="1">
+                <field name="check_in" type="row" interval="day" />
+                <field name="total_amount" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_hotel_booking_menu" model="ir.actions.act_window">
+        <field name="name">Booking</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_ids"
+            eval="[(5,0,0),
+            (0,0,{'sequence':1,'view_mode':'tree','view_id':ref('hotel_management_system.hotel_booking_view_tree')}),
+            (0,0,{'sequence':2,'view_mode':'form','view_id':ref('hotel_management_system.hotel_booking_view_form')}),
+            (0,0,{'sequence':3,'view_mode':'calendar','view_id':ref('hotel_management_system.hotel_booking_calendar_view')}),
+            ]" />
+        <field name="search_view_id" ref="view_hotel_booking_filter" />
+        <field name="context">{'search_default_booking_status': 0}</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_booking">
+                Create a new booking, the first step of a new Room!
+            </p>
+            <p> Once the booking is confirmed by the customer, it becomes a Booked Room.<br /> You
+                will be able to create an bill and collect the bill. </p>
+        </field>
+    </record>
+
+    <record id="action_hotel_booking_reporting_menu" model="ir.actions.act_window">
+        <field name="name">Reporting</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+
+    <record id="wk_hotel_dashboard_action" model="ir.actions.client">
+        <field name="name">Hotel Dashboard</field>
+        <field name="tag">hotel_dashboard_action</field>
+        <field name="target">main</field>
+    </record>
+
+    <record id="action_hotel_dashboard" model="ir.actions.act_window">
+        <field name="name">Front Desk Dashboard</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_mode">calendar</field>
+    </record>
+
+    <record id="rating_rating_view_search_hotel" model="ir.ui.view">
+        <field name="name">rating.rating.search.hotel</field>
+        <field name="model">rating.rating</field>
+        <field name="inherit_id" ref="rating.rating_rating_view_search"/>
+        <field name="mode">primary</field>
+        <field name="priority">65</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='resource']" position="replace">
+                <filter string="Booking" name="resource" context="{'group_by':'res_name'}"/>
+            </xpath>
+            <xpath expr="//filter[@name='resource']" position="after">
+                <filter string="Hotel" name="groupby_hotel" context="{'group_by': 'parent_res_name'}"/>
+            </xpath>
+            <xpath expr="/search" position="inside">
+                <filter string="This Week" name="creation_date_filter" domain="[
+                ('create_date', '>=', (datetime.datetime.combine(context_today() + relativedelta(weeks=-1,days=1,weekday=0), datetime.time(0,0,0)).to_utc()).strftime('%Y-%m-%d %H:%M:%S')),
+                ('create_date', '&lt;', (datetime.datetime.combine(context_today() + relativedelta(days=1,weekday=0), datetime.time(0,0,0)).to_utc()).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="rating_rating_action_hotel_report" model="ir.actions.act_window">
+        <field name="name">Customer Ratings</field>
+        <field name="res_model">rating.rating</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('res_model','in',['hotel.booking', 'hotel.hotels'])]</field>
+        <field name="search_view_id" ref="rating_rating_view_search_hotel"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No customer ratings on live chat session yet
+            </p>
+        </field>
+    </record>
+</odoo>

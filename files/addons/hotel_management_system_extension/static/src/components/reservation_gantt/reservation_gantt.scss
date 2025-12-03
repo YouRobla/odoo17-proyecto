@@ -1,0 +1,1908 @@
+
+$reservation-state-colors: (
+    // Estados principales (8 estados únicos)
+    'initial': #A9A9A9,     // BORRADOR (Gris oscuro)
+    'confirmed': #00BFA5,   // CONFIRMADA (Turquesa)
+    'checkin': #FF6B35,     // CHECK-IN (Naranja rojizo)
+    'checkout': #1A237E,    // CHECK-OUT (Azul zafiro)
+    'cleaning_needed': #FF9800, // LIMPIEZA NECESARIA (Naranja)
+    'room_ready': #4CAF50,  // HABITACION LISTA (Verde)
+    'cancelled': #D32F2F,   // CANCELADA (Rojo intenso)
+    'no_show': #6e1f8f,     // NO SE PRESENTO (Gris pizarra)
+    
+    // Estados Legacy (Compatibilidad) - Mapeados a estados principales
+    'draft': #A9A9A9,       // BORRADOR (estado legacy)
+    'confirm': #00BFA5,     // CONFIRMADA (estado legacy)
+    'allot': #FF6B35,       // CHECK-IN (estado legacy)
+    'check_in': #FF6B35,    // CHECK-IN (estado legacy)
+    'checkout_pending': #1A237E, // CHECK-OUT (estado legacy)
+    'pending': #00BFA5,     // CONFIRMADA (estado legacy)
+    'room_assigned': #FF6B35, // CHECK-IN (estado legacy)
+    'cancel': #D32F2F,      // CANCELADA (estado legacy)
+    'done': #4CAF50,        // HABITACION LISTA (estado legacy)
+    'unknown': #7B1FA2,     // Estado desconocido (Púrpura oscuro)
+);
+
+// Función para obtener el color de un estado
+@function get-state-color($state) {
+    @return map-get($reservation-state-colors, $state);
+}
+
+// Variables del Sistema de Diseño
+$primary-color: #1e1e20;
+$secondary-color: rgb(41, 77, 145);
+$accent-color: #A0BFE0;
+$light-bg-color: #C5DFF8;
+$text-dark: #2c3e50;
+$text-light: #f8f9fa;
+$text-muted: #092246;
+$surface-color: #ffffff;
+$background-color: #eaf1fb;
+$border-color: #0e0925;
+$border-light-color: #cecdcf;
+$hover-color: #f1f5f9;
+
+
+// Estados de Reserva - Nueva Estructura
+$state-draft: get-state-color('draft');
+$state-confirmed: get-state-color('confirmed');
+$state-checkin: get-state-color('checkin');
+$state-checkout: get-state-color('checkout');
+$state-checkout-pending: get-state-color('checkout_pending');
+$state-room-assigned: get-state-color('room_assigned');
+$state-pending: get-state-color('pending');
+$state-cleaning-needed: get-state-color('cleaning_needed');
+$state-room-ready: get-state-color('room_ready');
+$state-cancelled: get-state-color('cancelled');
+$state-no-show: get-state-color('no_show');
+
+// Estados Legacy (Compatibilidad)
+$state-initial: get-state-color('initial');
+$state-confirm: get-state-color('confirm');
+$state-check-in: get-state-color('check_in');
+$state-allot: get-state-color('allot');
+$state-cancel: get-state-color('cancel');
+$state-done: get-state-color('checkout');
+$state-selection: rgba($primary-color, 0.25);
+$state-selection-border: $primary-color;
+
+// Dimensiones y Espaciado
+$border-radius-lg: 11px;
+$border-radius-md: 14px;
+$shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+
+// =============================================================================
+// MIXINS
+// =============================================================================
+
+@mixin flex($align: center, $justify: center) {
+    display: flex;
+    align-items: $align;
+    justify-content: $justify;
+}
+
+// Mixin para generar estilos de estados de reserva
+@mixin reservation-state-styles($state, $color) {
+    &.state_#{$state} {
+        background: $color !important;
+        color: #{if(lightness($color) > 50%, $text-dark, $text-light)};
+    }
+}
+
+// Mixin para generar estilos de leyenda de estados
+@mixin legend-state-styles($state, $color) {
+    &[title*="#{$state}"] {
+        border-left: 4px solid $color;
+        .legend-emoji { 
+            color: $color; 
+        }
+    }
+}
+
+// =============================================================================
+// ESTILOS PRINCIPALES
+// =============================================================================
+
+.o_reservation_gantt {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: $background-color;
+    height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba($primary-color, 0.05);
+        border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba($primary-color, 0.3);
+        border-radius: 6px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+
+        &:hover {
+            background: rgba($primary-color, 0.5);
+            background-clip: content-box;
+        }
+    }
+
+        // =============================================================================
+    // NAVEGACIÓN DE MESES - ESTILO DE CABECERA DE CALENDARIO
+    // =============================================================================
+    .gantt-month-navigation {
+        background-color: $primary-color;
+        color: #ffffff;
+        margin-bottom: 3px;
+        padding: 0;
+        flex-shrink: 0;
+        border: none;
+        box-shadow: $shadow;
+        border-radius: $border-radius-lg;
+
+        .month-nav-container {
+            @include flex(center, center);
+            gap: 16px;
+            position: relative;
+            height: 55px;
+            padding: 0 20px;
+        }
+
+        .month-nav-btn {
+            background: transparent;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: none;
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+                transform: none;
+                box-shadow: none;
+            }
+
+            &:active {
+                background-color: rgba(255, 255, 255, 0.3);
+                transform: none;
+                box-shadow: none;
+            }
+
+            i {
+                font-size: 16px;
+                font-weight: 500;
+            }
+        }
+
+        .month-display {
+            @include flex(center, center);
+            flex-direction: column;
+            gap: 2px;
+            min-width: 180px;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+
+            .month-name {
+                font-size: 18px;
+                font-weight: 600;
+                color: #ffffff;
+                text-transform: capitalize;
+                letter-spacing: 0.3px;
+                line-height: 1.2;
+            }
+
+            .month-year {
+                font-size: 14px;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.8);
+                line-height: 1.2;
+            }
+        }
+    }
+
+
+    // =============================================================================
+    // BARRA DE HERRAMIENTAS
+    // =============================================================================
+    .gantt-toolbar {
+        @include flex(center, space-between);
+        padding: 16px 24px;
+        background-color: $surface-color;
+        border-radius: $border-radius-lg;
+        box-shadow: $shadow;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+        flex-shrink: 0;
+
+        .toolbar-left {
+            @include flex(center, flex-start);
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            @include flex(center, flex-start);
+            gap: 8px;
+
+            label {
+                font-size: 13px;
+                font-weight: 500;
+                color: $text-muted;
+            }
+
+            .form-select,
+            select,
+            input {
+                padding: 8px 12px;
+                border: 1px solid $border-light-color;
+                border-radius: $border-radius-md;
+                background-color: $surface-color;
+                font-weight: 500;
+                color: $text-dark;
+                min-width: 120px;
+                margin-right: 8px;
+                transition: border-color 0.2s, box-shadow 0.2s;
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary-color;
+                    box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
+                }
+            }
+        }
+
+        .btn-today {
+            background-color: $primary-color;
+            color: $text-light;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: $border-radius-md;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+
+            &:hover {
+                background-color: darken($primary-color, 8%);
+                transform: translateY(-1px);
+            }
+        }
+
+        .o_refresh_btn {
+            background-color: $primary-color;
+            color: $text-light;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: $border-radius-md;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &:hover {
+                background-color: darken($secondary-color, 8%);
+                transform: translateY(-1px);
+            }
+
+            i {
+                font-size: 14px;
+            }
+        }
+
+        .btn-room-panel {
+            background-color: $secondary-color;
+            color: $text-light;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: $border-radius-md;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            margin-left: 8px;
+
+            &:hover {
+                background-color: darken($secondary-color, 8%);
+                transform: translateY(-1px);
+            }
+        }
+
+
+
+        // Navegación de Meses
+        .month-nav-group {
+            background: #f4f6fa;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            overflow: hidden;
+            margin-left: 10px;
+            border: 1px solid #d1d5db;
+            display: flex;
+        }
+
+        .btn-nav-arrow {
+            border: none;
+            background: transparent;
+            color: #4A55A2;
+            font-size: 18px;
+            font-weight: bold;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: none;
+            border-radius: 0;
+            cursor: pointer;
+
+            &.left {
+                border-right: 1px solid #e2e8f0;
+            }
+
+            &.right {
+                border-left: 1px solid #e2e8f0;
+            }
+
+            &:hover {
+                background: #e0e7ff;
+                color: #222;
+            }
+        }
+
+        // Leyenda
+        .gantt-legend {
+            @include flex(center, flex-start);
+            gap: 16px;
+            flex-wrap: wrap;
+
+            .legend-item {
+                @include flex();
+                gap: 8px;
+                padding: 6px 12px;
+                border-radius: $border-radius-md;
+                background-color: rgba(255, 255, 255, 0.8);
+                border: 1px solid $border-light-color;
+                transition: all 0.2s ease;
+                cursor: help;
+                position: relative;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 1);
+                    box-shadow: 0 2px 8px rgba(252, 252, 252, 0.1);
+                    transform: translateY(-1px);
+                }
+
+                .legend-emoji {
+                    font-size: 16px;
+                    line-height: 1;
+                }
+
+                .legend-text {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: $text-dark;
+                    white-space: nowrap;
+                }
+
+                // Colores específicos para cada estado en la leyenda
+                @each $state, $color in $reservation-state-colors {
+                    @include legend-state-styles($state, $color);
+                }
+                
+                // Casos especiales para estados con nombres compuestos
+                &[title*="Borrador"] {
+                    border-left: 4px solid get-state-color('draft');
+                    .legend-emoji { color: get-state-color('draft'); }
+                }
+                
+                &[title*="Habitación Asignada"] {
+                    border-left: 4px solid get-state-color('room_assigned');
+                    .legend-emoji { color: get-state-color('room_assigned'); }
+                }
+                
+                &[title*="Check-out Pendiente"] {
+                    border-left: 4px solid get-state-color('checkout_pending');
+                    .legend-emoji { color: get-state-color('checkout_pending'); }
+                }
+                
+                &[title*="Limpieza Necesaria"] {
+                    border-left: 4px solid get-state-color('cleaning_needed');
+                    .legend-emoji { color: get-state-color('cleaning_needed'); }
+                }
+            }
+        }
+    }
+
+    // =============================================================================
+    // ESTADÍSTICAS
+    // =============================================================================
+    .gantt-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+
+        .stat-item {
+            background-color: $surface-color;
+            padding: 20px;
+            border-radius: $border-radius-lg;
+            box-shadow: $shadow;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .stat-label {
+                display: block;
+                font-size: 13px;
+                color: $text-muted;
+                margin-bottom: 4px;
+                font-weight: 500;
+            }
+
+            .stat-value {
+                font-size: 22px;
+                font-weight: 700;
+                color: $secondary-color;
+            }
+
+            &.help-item {
+                background: linear-gradient(135deg, $accent-color 0%, $light-bg-color 100%);
+                border: 1px solid rgba($primary-color, 0.2);
+
+                .stat-label {
+                    color: $primary-color;
+                    font-weight: 600;
+                }
+
+                .help-text {
+                    font-size: 12px;
+                    color: $text-dark;
+                    font-weight: 500;
+                    line-height: 1.4;
+                }
+            }
+        }
+    }
+
+    // =============================================================================
+    // CONTENEDOR GANTT
+    // =============================================================================
+    .gantt-container-wrapper {
+        flex-grow: 1;
+        position: relative;
+        overflow: hidden;
+        background-color: $surface-color;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-lg;
+        box-shadow: $shadow;
+        min-height: 500px;
+        max-height: calc(100vh - 200px);
+        margin-bottom: 30px;
+
+        .gantt-loader-container {
+            position: absolute;
+            inset: 0;
+            @include flex();
+            background-color: rgba($surface-color, 0.7);
+            z-index: 20;
+            backdrop-filter: blur(4px);
+        }
+
+        .gantt-container {
+            display: grid;
+            height: 100%;
+            overflow: auto;
+            grid-auto-rows: 55px !important;
+            scroll-behavior: smooth;
+
+            &::-webkit-scrollbar {
+                height: 8px;
+                width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: $accent-color;
+                border-radius: 4px;
+
+                &:hover {
+                    background: darken($accent-color, 10%);
+                }
+            }
+        }
+
+        .gantt_cell {
+            box-sizing: border-box;
+            border-bottom: 1px solid $border-color;
+        }
+
+        // =============================================================================
+        // CABECERA DEL GANTT
+        // =============================================================================
+        .gantt_header_row {
+            display: grid;
+            grid-template-columns: subgrid;
+            grid-column: 1 / -1;
+            grid-row: 1;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+
+            .header_room {
+                position: sticky;
+                left: 0;
+                color: #ffffff;
+                z-index: 11;
+                background-color: #222326;
+                border-right: 1px solid $border-color;
+                border-bottom: 1px solid $border-color;
+                padding: 12px;
+                @include flex(flex-start);
+            }
+
+            .gantt_header_days {
+                grid-column: 2 / -1;
+                display: grid;
+                grid-template-columns: repeat(var(--days-in-month, 31), 1fr);
+            }
+        }
+
+        // Estilos de cabecera de días
+        .header_day,
+        .gantt-header-cell.header_day {
+            background-color: $primary-color !important;
+            color: #ffffff !important;
+            font-weight: 500;
+            border-bottom: 1px solid #d1d5db !important;
+            border-right: 1px solid #9ea0a3 !important;
+            padding: 4px 0 6px 0;
+            text-align: center;
+            min-width: 38px;
+            max-width: 38px;
+
+            .day-number {
+                font-size: 1.08em;
+                font-weight: 500;
+                letter-spacing: 0.2px;
+                margin-bottom: 0px;
+                display: inline-block;
+                position: relative;
+            }
+
+            .day-name {
+                font-size: 0.92em;
+                font-weight: 500;
+                text-transform: uppercase;
+                color: #ffffff;
+                letter-spacing: 0.5px;
+                margin-top: 0px;
+                display: block;
+            }
+
+            &.past-day {
+                background-color: #4c4e51 !important;
+                color: #c7c4c4 !important;
+                font-weight: 500;
+
+                .day-name {
+                    color: #b0b0b0;
+                }
+            }
+
+            &.today {
+                background-color: $accent-color !important;
+                color: #222 !important;
+                font-weight: 600;
+
+                .day-number {
+                    background: #e0eaff;
+                    color: #222;
+                    border-radius: 50%;
+                    padding: 2px 7px;
+                    box-shadow: none;
+                }
+
+                .day-name {
+                    color: #2563eb;
+                }
+            }
+
+            &.cell-hovered {
+                background-color: #3b82f6 !important;
+                border: 2px solid #2563eb !important;
+                color: #fff !important;
+                z-index: 20;
+                height: 100% !important;
+                min-height: 38px !important;
+                display: flex !important;
+                align-items: stretch !important;
+                justify-content: stretch !important;
+            }
+        }
+
+                 // =============================================================================
+         // CELDAS DE HABITACIONES
+         // =============================================================================
+         .room_name_cell {
+             height: 55px;
+             position: sticky;
+             left: 0;
+             z-index: 5;
+             background-color: $surface-color;
+             @include flex(flex-start, flex-start);
+             flex-direction: column;
+             padding: 8px 12px;
+             border-right: 1px solid $border-color;
+             transition: all 0.2s ease;
+
+            .room-name {
+                font-weight: 600;
+                font-size: 14px;
+                color: $text-dark;
+            }
+
+            .room-type {
+                font-size: 11px;
+                color: $text-muted;
+                background-color: $background-color;
+                padding: 2px 8px;
+                border-radius: 10px;
+                margin-top: 4px;
+                display: inline-block;
+            }
+
+            // Iconos de servicios
+            .room-services {
+                display: flex;
+                gap: 6px;
+                margin-top: 4px;
+
+                .service-icon {
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 4px;
+                    background: $accent-color;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 13px;
+                    color: $primary-color;
+                    border: 1px solid $border-color;
+                }
+
+                .housekeeping-icon {
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: $state-done;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 13px;
+                    color: $text-light;
+                    border: 1px solid $border-color;
+                }
+                         }
+         }
+ 
+
+ 
+         // =============================================================================
+         // HOVER SINCRONIZADO - SOLUCIÓN CON JAVASCRIPT
+         // =============================================================================
+         // Cuando se hace hover en .gantt_row_content, afectar a su hermano .room_name_cell
+         .room_name_cell.row-hovered {
+             background-color: rgba(59, 130, 246, 0.35) !important;
+             border-right: 4px solid #3b82f6 !important;
+             box-shadow: inset 0 0 0 3px rgba(59, 130, 246, 0.4), 0 2px 8px rgba(59, 130, 246, 0.3);
+             z-index: 6;
+             transition: all 0.2s ease;
+             transform: translateX(2px);
+         }
+
+         // =============================================================================
+         // CONTENIDO DE FILAS
+         // =============================================================================
+         .gantt_row_content {
+            height: 55px;
+            grid-column: 2 / -1;
+            display: grid;
+            grid-template-columns: repeat(var(--days-in-month, 31), 1fr);
+            position: relative;
+
+            .day_cell {
+                background-color: #fff !important;
+                border-right: 1px solid #9ea0a3 !important;
+                border-bottom: 1px solid #a0a2a4 !important;
+                color: #222;
+                min-width: 38px;
+                max-width: 38px;
+                padding: 0;
+                transition: background-color 0.2s ease;
+                z-index: 1;
+                position: relative;
+                user-select: none;
+                display: block;
+
+                &.weekend {
+                    background-color: #fdfdfe !important;
+                }
+
+                &.past-day {
+                    background-color: #f0f0f0 !important;
+                    color: #b0b0b0 !important;
+                    pointer-events: none;
+                    opacity: 0.7;
+                }
+
+                                 &.cell-available {
+                     cursor: pointer;
+                     transition: all 0.2s ease;
+ 
+                     &:hover {
+                         background-color: rgba(34, 34, 198, 0.574) !important;
+                         border: 2px solid rgba(14, 62, 140, 0.707) !important;
+                         z-index: 15;
+                         box-shadow: 0 2px 6px rgba(59, 130, 246, 0.08);
+                     }
+                 }
+
+                &.cell-occupied {
+                    background-color: #f8f8f8 !important;
+                    cursor: not-allowed;
+                    opacity: 0.7;
+
+                    &:hover {
+                        background-color: #f0f0f0 !important;
+                    }
+                }
+
+                &.cell-hovered {
+                    background-color: #3b82f6 !important;
+                    border: 2px solid #2563eb !important;
+                    color: #fff !important;
+                    z-index: 20;
+                    height: 100% !important;
+                    min-height: 38px !important;
+                    display: flex !important;
+                    align-items: stretch !important;
+                    justify-content: stretch !important;
+                    box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+                }
+            }
+
+            // =============================================================================
+            // OVERLAYS HÍBRIDOS PARA NAVEGACIÓN CONTINUA
+            // =============================================================================
+            .hybrid-overlay {
+                position: absolute;
+                inset: 0;
+                display: grid;
+                grid-template-columns: repeat(var(--days-in-month, 31), 1fr);
+                pointer-events: none;
+                z-index: 2;
+            }
+
+            .hybrid-spacer {
+                pointer-events: none;
+                background: transparent;
+            }
+
+            .day_cell.hybrid {
+                background: rgba(255, 255, 255, 0.95) !important;
+                border-right: 1px solid #9ea0a3 !important;
+                border-bottom: 1px solid #a0a2a4 !important;
+                min-width: 38px;
+                max-width: 38px;
+                pointer-events: auto; // permite selección
+                opacity: 0.9;
+                
+                &:hover {
+                    background-color: rgba(34, 34, 198, 0.574) !important;
+                    border: 2px solid rgba(14, 62, 140, 0.707) !important;
+                    z-index: 15;
+                    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.08);
+                    opacity: 1;
+                }
+            }
+
+            // =============================================================================
+            // BARRAS DE RESERVA
+            // =============================================================================
+            .gantt_reservation_bar {
+                position: absolute;
+                top: 50%;
+                height: 10px;
+                margin: 0;
+                transform: translateY(-50%);
+                display: flex;
+                align-items: center;
+                z-index: 2;
+                color: $text-light;
+                cursor: pointer;
+                @include flex(space-between);
+                padding: 0 6px;
+                transition: all 0.25s ease;
+                border-radius: $border-radius-md;
+                transform-origin: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                min-width: 100%;
+                min-height: 65%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                border: none;
+
+                &:hover {
+                    transform: translateY(-50%) scale(1.08);
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                    filter: brightness(1.05);
+                }
+
+                // Estados de reserva - usando el mapa de colores
+                @each $state, $color in $reservation-state-colors {
+                    @include reservation-state-styles($state, $color);
+                }
+
+                &.checkout_soon {
+                    border: 2px solid $accent-color;
+                    box-shadow: 0 0 0 3px rgba($accent-color, 0.15), 0 2px 8px rgba(0, 0, 0, 0.10);
+                }
+
+                .gantt_reservation_label {
+                    font-weight: 700;
+                    font-size: 13px;
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .gantt_reservation_duration {
+                    font-size: 11px;
+                    font-weight: 700;
+                    background-color: rgba(0, 0, 0, 0.10);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    flex-shrink: 0;
+                    margin-left: 8px;
+                }
+
+                .gantt_reservation_status_emoji {
+                    font-size: 12px;
+                    margin-left: 4px;
+                    opacity: 0.9;
+                    flex-shrink: 0;
+                }
+            }
+        }
+
+        // =============================================================================
+        // OVERLAY DE SELECCIÓN
+        // =============================================================================
+        .gantt_selection_overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            pointer-events: none;
+            background-color: rgba(59, 130, 246, 0.8);
+            border: 2px solid #2563eb;
+            border-radius: $border-radius-md;
+            animation: pulse-selection 1.5s ease-in-out infinite;
+            @include flex(center);
+            color: $text-light;
+            font-weight: 600;
+            font-size: 12px;
+
+            &.invalid-selection {
+                background-color: rgba(#ff4757, 0.25);
+                border-color: #ff4757;
+                animation: shake 0.5s ease-in-out;
+                color: #ff4757;
+            }
+
+            .selection-info {
+                position: absolute;
+                top: -35px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: $state-selection-border;
+                color: $text-light;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                white-space: nowrap;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                z-index: 10;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border: 5px solid transparent;
+                    border-top-color: $state-selection-border;
+                }
+            }
+
+            &.invalid-selection .selection-info {
+                background-color: #ff4757;
+
+                &::after {
+                    border-top-color: #ff4757;
+                }
+            }
+        }
+
+        // Estado vacío
+        .empty-state {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            padding: 105px 20px;
+            @include flex();
+            flex-direction: column;
+            text-align: center;
+            color: $text-muted;
+
+            .empty-icon {
+                font-size: 50px;
+                margin-bottom: 16px;
+            }
+
+            .empty-message {
+                font-size: 18px;
+                font-weight: 600;
+                color: $text-dark;
+            }
+
+            .empty-suggestion {
+                font-size: 14px;
+                margin-top: 4px;
+            }
+        }
+    }
+    
+    // =============================================================================
+    // ESPACIO FINAL
+    // =============================================================================
+    &::after {
+        content: '';
+        display: block;
+        height: 60px;
+        width: 100%;
+        flex-shrink: 0;
+    }
+}
+
+// =============================================================================
+// ESTADOS DEL CUERPO
+// =============================================================================
+body.gantt-selecting {
+    user-select: none;
+    cursor: pointer;
+
+    .gantt_row_content .day_cell.cell-available {
+        cursor: pointer !important;
+    }
+
+    .gantt_row_content .day_cell.cell-occupied {
+        cursor: not-allowed !important;
+    }
+}
+
+body.gantt-dragging {
+    user-select: none;
+    cursor: grabbing;
+}
+
+// =============================================================================
+// TOOLTIP PERSONALIZADO
+// =============================================================================
+.gantt-tooltip-custom {
+    position: fixed;
+    background: #fff;
+    color: #222;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    padding: 14px 20px;
+    min-width: 180px;
+    max-width: 320px;
+    word-break: break-word;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid; // El color se aplica dinámicamente desde JavaScript
+    line-height: 1.5;
+    letter-spacing: 0.1px;
+    z-index: 9999;
+    pointer-events: none;
+    transition: all 0.15s ease;
+    margin-bottom: 8px;
+
+    strong {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+    b {
+        color: #111;
+    }
+
+    span {
+        color: #666;
+    }
+
+    .tooltip-price {
+        margin-top: 6px;
+        font-weight: 600;
+        color: #2c3e50;
+        
+        strong {
+            color: #1a365d;
+            font-size: 14px;
+        }
+    }
+
+    .tooltip-status {
+        margin-top: 6px;
+        
+        .tooltip-status-indicator {
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.05);
+            display: inline-block;
+            margin-left: 4px;
+        }
+    }
+
+    .tooltip-status-description {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #e2e8f0;
+        font-size: 13px;
+        color: #666;
+        font-style: italic;
+        line-height: 1.4;
+    }
+}
+
+// =============================================================================
+// ANIMACIONES
+// =============================================================================
+@keyframes pulse-selection {
+    0%, 100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.01);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+    }
+}
+
+// =============================================================================
+// RESPONSIVE
+// =============================================================================
+@media (max-width: 900px) {
+    .o_reservation_gantt {
+        height: 100vh;
+        padding: 15px;
+        
+        .gantt-toolbar,
+        .gantt-stats {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .gantt-container {
+            font-size: 13px;
+        }
+        
+        .gantt-container-wrapper {
+            max-height: calc(100vh - 180px);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .o_reservation_gantt {
+        padding: 10px;
+        
+        .gantt-container-wrapper {
+            max-height: calc(100vh - 150px);
+        }
+        
+        .gantt-month-navigation {
+            .month-nav-container {
+                height: 45px;
+                padding: 0 15px;
+            }
+            
+            .month-display {
+                min-width: 140px;
+                
+                .month-name {
+                    font-size: 16px;
+                }
+                
+                .month-year {
+                    font-size: 12px;
+                }
+            }
+        }
+
+    }
+}
+
+@media (max-width: 480px) {
+    .o_reservation_gantt {
+        padding: 8px;
+        
+        .gantt-container-wrapper {
+            max-height: calc(100vh - 120px);
+        }
+        
+        .gantt-toolbar {
+            padding: 12px 16px;
+        }
+        
+        .gantt-stats {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+}
+
+// =============================================================================
+// ESTILOS PARA EL BOTÓN DEL ROOM PANEL
+// =============================================================================
+
+.btn-room-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    margin-right: 16px;
+    background-color: #6c757d;
+    border: 1px solid #6c757d;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    i {
+        font-size: 16px;
+    }
+    
+    span {
+        font-weight: 500;
+    }
+}
+
+// =============================================================================
+// ROOM CHANGE SEGMENT STYLING
+// =============================================================================
+
+/* Room Change Segment Styling */
+.room_change_segment {
+    position: relative;
+    
+    .segment_indicator {
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        font-size: 0.7em;
+        font-weight: bold;
+        padding: 1px 4px;
+        border-radius: 3px;
+        margin-left: 4px;
+        display: inline-block;
+    }
+    
+    .connector_arrow {
+        color: #666;
+        font-weight: bold;
+        margin-left: 2px;
+        font-size: 0.8em;
+    }
+}
+
+.room_change_connector {
+    position: absolute;
+    top: 50%;
+    right: -1px;
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, #FFD700 0%, #FFA500 50%, transparent 100%);
+    transform: translateY(-50%);
+    z-index: 5;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        background: linear-gradient(90deg, #FFD700 0%, #FFA500 50%, transparent 100%);
+        border-radius: inherit;
+        z-index: -1;
+        animation: connectorPulse 2s ease-in-out infinite;
+    }
+    
+    &::after {
+        content: '↗';
+        position: absolute;
+        right: -12px;
+        top: -10px;
+        color: #FF8C00;
+        font-size: 14px;
+        font-weight: bold;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        animation: arrowBounce 1.5s ease-in-out infinite;
+    }
+}
+
+/* Animación para el pulso del conector */
+@keyframes connectorPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Animación para la flecha del conector */
+@keyframes arrowBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+}
+
+/* =============================================================================
+   NOTIFICACIONES DE SEGUIMIENTO
+   ============================================================================= */
+
+/* Animaciones para notificaciones */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Estilos para notificaciones de cambio de habitación */
+.room-change-notification {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    border: none;
+    outline: none;
+    
+    .notification-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        
+        .notification-message {
+            flex: 1;
+            font-weight: 500;
+            
+            strong {
+                font-weight: 600;
+            }
+        }
+        
+        .notification-actions {
+            flex-shrink: 0;
+            
+            .btn-notification-dismiss {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s ease;
+                
+                &:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                }
+            }
+        }
+    }
+    
+    /* Variantes de notificación */
+    &.notification-info {
+        background: linear-gradient(135deg, #2196F3, #1976D2) !important;
+    }
+    
+    &.notification-warning {
+        background: linear-gradient(135deg, #FF9800, #F57C00) !important;
+    }
+    
+    &.notification-success {
+        background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+    }
+    
+    &.notification-error {
+        background: linear-gradient(135deg, #F44336, #D32F2F) !important;
+    }
+}
+
+/* Enhanced tooltip for room change segments */
+.gantt-tooltip-custom {
+    .tooltip-segment-info {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #ddd;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 4px;
+        padding: 8px;
+        
+        .segment-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .segment-details {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        
+        .segment-badge {
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: white !important; // Asegurar texto blanco en todos los badges
+            
+            &.segment-1 {
+                background: linear-gradient(135deg, #4CAF50, #45a049);
+                color: white !important;
+                box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+            }
+            
+            &.segment-2 {
+                background: linear-gradient(135deg, #2196F3, #1976D2);
+                color: white !important;
+                box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+            }
+            
+            &.segment-3 {
+                background: linear-gradient(135deg, #FF9800, #F57C00);
+                color: white !important;
+                box-shadow: 0 2px 4px rgba(255, 152, 0, 0.3);
+            }
+            
+            &.first-segment {
+                background: linear-gradient(135deg, #4CAF50, #45a049);
+                color: white !important;
+                box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+            }
+            
+            &.last-segment {
+                background: linear-gradient(135deg, #8B0000, #A52A2A);
+                color: white !important;
+                box-shadow: 0 2px 4px rgba(139, 0, 0, 0.4);
+            }
+            
+            &.has-next {
+                background: linear-gradient(135deg, #2196F3, #1976D2);
+                color: white !important;
+                box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+            }
+        }
+        
+        .room-change-details {
+            margin-top: 6px;
+            
+            .room-change-info {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                
+                .room-change-label {
+                    font-size: 0.85em;
+                    color: #555;
+                    
+                    strong {
+                        color: #333;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+        
+        .room-change-summary {
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid #FFD700;
+            
+            .change-info-item {
+                margin-bottom: 4px;
+                display: flex;
+                align-items: center;
+                
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                
+                .change-label {
+                    font-size: 0.8em;
+                    color: #444;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    
+                    strong {
+                        color: #222;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+        
+        .status-badge {
+            font-size: 0.75em;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: white !important; // Asegurar texto blanco en todos los badges
+            
+            &.origin {
+                background: linear-gradient(135deg, #FF6B35, #E55A2B);
+                color: white !important;
+                box-shadow: 0 1px 3px rgba(255, 107, 53, 0.4);
+            }
+            
+            &.destination {
+                background: linear-gradient(135deg, #28A745, #1E7E34);
+                color: white !important;
+                box-shadow: 0 1px 3px rgba(40, 167, 69, 0.4);
+            }
+            
+            &.intermediate {
+                background: linear-gradient(135deg, #6F42C1, #5A32A3);
+                color: white !important;
+                box-shadow: 0 1px 3px rgba(111, 66, 193, 0.4);
+            }
+        }
+    }
+}
+
+/* Visual enhancements for room change segments */
+.gantt_reservation_bar.room_change_segment {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    
+    /* Indicador de reserva vinculada */
+    &::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        border-radius: inherit;
+        z-index: -1;
+        animation: linkedReservationGlow 3s ease-in-out infinite;
+    }
+    
+    /* Borde superior distintivo para reservas vinculadas */
+    &::after {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+        border-radius: 2px 2px 0 0;
+        z-index: 1;
+    }
+    
+    &:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+        border-color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+/* Animación para el resplandor de reservas vinculadas */
+@keyframes linkedReservationGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+/* Segment color variations */
+.room_change_segment[data-segment="0"] {
+    background: linear-gradient(135deg, #4CAF50, #4CAF50dd) !important;
+    border-left-color: #2E7D32 !important;
+}
+
+.room_change_segment[data-segment="1"] {
+    background: linear-gradient(135deg, #2196F3, #2196F3dd) !important;
+    border-left-color: #1565C0 !important;
+}
+
+.room_change_segment[data-segment="2"] {
+    background: linear-gradient(135deg, #FF9800, #FF9800dd) !important;
+    border-left-color: #E65100 !important;
+}
+
+.room_change_segment[data-segment="3"] {
+    background: linear-gradient(135deg, #9C27B0, #9C27B0dd) !important;
+    border-left-color: #6A1B9A !important;
+}
+
+.room_change_segment[data-segment="4"] {
+    background: linear-gradient(135deg, #F44336, #F44336dd) !important;
+    border-left-color: #C62828 !important;
+}
+
+.room_change_segment[data-segment="5"] {
+    background: linear-gradient(135deg, #00BCD4, #00BCD4dd) !important;
+    border-left-color: #00838F !important;
+}
+
+.room_change_segment[data-segment="6"] {
+    background: linear-gradient(135deg, #795548, #795548dd) !important;
+    border-left-color: #5D4037 !important;
+}
+
+.room_change_segment[data-segment="7"] {
+    background: linear-gradient(135deg, #607D8B, #607D8Bdd) !important;
+    border-left-color: #455A64 !important;
+}
+
+/* Animation for room change segments */
+@keyframes segmentPulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+.room_change_segment:hover {
+    animation: segmentPulse 2s infinite;
+}
+
+/* Connector line animation */
+.room_change_connector {
+    animation: connectorFlow 3s infinite;
+}
+
+@keyframes connectorFlow {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.3; }
+}
+
+/* =============================================================================
+   CONECTORES MEJORADOS ENTRE HABITACIONES
+   ============================================================================= */
+
+/* Estilos para conectores con tooltip */
+.room_change_connector {
+    position: relative;
+    
+    &::after {
+        content: attr(data-next-room);
+        position: absolute;
+        right: -8px;
+        top: -12px;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 20;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        
+        /* Flecha del tooltip */
+        &::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+        }
+    }
+    
+    &:hover {
+        &::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Animación mejorada para conectores */
+@keyframes connectorPulse {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: translateY(-50%) scaleX(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: translateY(-50%) scaleX(1.1);
+    }
+}
+
+/* Efectos de hover mejorados */
+.room_change_connector:hover {
+    background: linear-gradient(90deg, #FFD700 0%, #FF8C00 50%, transparent 100%) !important;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6) !important;
+    transform: translateY(-50%) scaleY(1.5) !important;
+    z-index: 15 !important;
+}
+
+/* Indicador de dirección mejorado */
+.room_change_connector::before {
+    content: '↗';
+    position: absolute;
+    right: -12px;
+    top: -10px;
+    color: #FF8C00;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: arrowBounce 1.5s ease-in-out infinite;
+    z-index: 12;
+}
+
+/* Animación de la flecha mejorada */
+@keyframes arrowBounce {
+    0%, 100% { 
+        transform: translateX(0) translateY(0);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: translateX(4px) translateY(-2px);
+        opacity: 1;
+    }
+}
+    
+// =============================================================================
+// CONTENIDO DE FILAS
+// =============================================================================
+
+.gantt_row_content {
+    position: relative; // permite overlays absolutos dentro de la fila
+    display: grid;
+    grid-template-columns: repeat(var(--days-in-month, 31), 1fr);
+}
+
+// =============================================================================
+// ESTILOS PARA DÍAS DE MESES ADYACENTES (NAVEGACIÓN CONTINUA)
+// =============================================================================
+
+// Días del mes anterior (menos prominentes)
+.prev-month-day,
+.next-month-day {
+    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0.02) !important;
+    
+    .day-number,
+    .day-name {
+        color: #999 !important;
+        font-size: 0.85em;
+    }
+    
+    &.gantt_header_cell {
+        background-color: rgba(0, 0, 0, 0.03) !important;
+    }
+    
+    // Estilos hover más sutiles para días adyacentes
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04) !important;
+    }
+}
+
+// Días del mes actual (prominentes - estilo normal)
+.current-month-day {
+    opacity: 1;
+}
+
+// =============================================================================
+// ESTILOS PARA CAMBIO DE HABITACIÓN - HOVER MEJORADO
+// =============================================================================
+
+// Resaltado de barras con cambio de habitación
+.gantt_reservation_bar.room-change-highlight {
+    position: relative;
+    z-index: 100 !important;
+    
+    // Efecto de resplandor
+    box-shadow: 
+        0 0 0 3px rgba(255, 107, 53, 0.3),
+        0 0 20px rgba(255, 107, 53, 0.4),
+        0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    
+    // Animación de pulso
+    animation: roomChangePulse 1.5s ease-in-out infinite;
+    
+    // Borde destacado
+    border: 2px solid #ff6b35 !important;
+    border-radius: 8px;
+    
+    // Transformación sutil
+    transform: scale(1.02) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    // Efecto de brillo interno
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, 
+            rgba(255, 107, 53, 0.1) 0%, 
+            rgba(255, 107, 53, 0.2) 50%, 
+            rgba(255, 107, 53, 0.1) 100%);
+        border-radius: 6px;
+        pointer-events: none;
+        animation: roomChangeShimmer 2s ease-in-out infinite;
+    }
+    
+    // Contenido de la barra
+    .gantt_reservation_content {
+        position: relative;
+        z-index: 2;
+        color: #ffffff !important;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+}
+
+// Animación de pulso para cambio de habitación
+@keyframes roomChangePulse {
+    0%, 100% { 
+        box-shadow: 
+            0 0 0 3px rgba(255, 107, 53, 0.3),
+            0 0 20px rgba(255, 107, 53, 0.4),
+            0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    50% { 
+        box-shadow: 
+            0 0 0 5px rgba(255, 107, 53, 0.5),
+            0 0 30px rgba(255, 107, 53, 0.6),
+            0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+// Animación de brillo interno
+@keyframes roomChangeShimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+// Indicador de conexión entre barras
+.room-change-connector {
+    animation: connectorBounce 1s ease-in-out infinite;
+    
+    // Efecto de hover en el indicador
+    &:hover {
+        transform: scale(1.2);
+        background: #ff8c42 !important;
+        box-shadow: 0 4px 8px rgba(255, 107, 53, 0.4);
+    }
+}
+
+// Animación de rebote para el indicador
+@keyframes connectorBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+

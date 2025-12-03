@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<templates id="template" xml:space="preserve">
+    <t t-name="wk_hotel_pos_expension.RoomInfoButton">
+        <t t-set="booking" t-value="bookingName"/>
+        <t t-log="booking"/>
+
+        <div class="control-button customer-button btn rounded-0 fw-bolder text-truncate" 
+            t-attf-class="{{booking ? 'btn-primary' : 'btn-light'}}"
+            t-on-click="() => this.click()">
+
+            <i class="fa fa-bed me-1" role="img" aria-label="Rooms" title="Rooms"/>
+            <t t-esc="booking" t-if="booking" />
+            <t t-else="">
+                Add Room
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<templates xml:space="preserve">
+    <!-- Multi-Hotel Card Template -->
+    <t t-name="hotel_management_system.multi-hotel-card-template">
+        <div class="mh-card col-12 col-sm-6 col-md-6 col-lg-4">
+            <div class="mh-card-content">
+                <t t-if="hotel.image">
+                    <img t-att-src="'data:image/jpeg;base64,'+hotel.image" t-att-alt="hotel.name" class="mh-card-logo" />
+                </t>
+                <t t-else="">
+                    <img src="/hotel_management_system/static/img/vector/default_hotel.png" t-att-alt="hotel.name" class="mh-card-logo" />
+                </t>
+                <h3 class="mh-card-title">
+                    <t t-out="hotel.name"/>
+                </h3>
+                <p class="mh-card-address">
+                    <t t-out="hotel.address"/>
+                </p>
+                <p class=''>Total Number of Rooms:
+                    <t t-out="hotel.number_of_rooms"/>
+                </p>
+                <a t-att-data-hotel_id='hotel.id' t-attf-href="/shop?hotel_id={{hotel.id}}" class="mh-card-button">Explore Rooms
+                    <span style='font-size: 20px;'>↗</span>
+                </a>
+            </div>
+        </div>
+    </t>
+</templates>

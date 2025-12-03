@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de Calendario para Reservas de Hotel -->
+    <record id="view_hotel_booking_calendar" model="ir.ui.view">
+        <field name="name">hotel.booking.calendar</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Reservas" 
+                      date_start="check_in" 
+                      date_stop="check_out" 
+                      color="partner_id"
+                      mode="month">
+                <field name="partner_id"/>
+                <field name="status_bar"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Acción de Cliente para Vista Dashboard Gantt -->
+    <record id="action_dashboard_gantt_view" model="ir.actions.client">
+        <field name="name">Dashboard Gantt</field>
+        <field name="tag">hotel.reservation_gantt_action</field>
+        <field name="target">current</field>
+    </record>
+    <!-- Acción del Panel de Habitaciones -->
+    <record id="action_room_panel_view" model="ir.actions.client">
+        <field name="name">Panel de Habitaciones</field>
+        <field name="tag">hotel_management_system_extension.room_panel_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="action_react_calendar_view" model="ir.actions.act_url">
+        <field name="name">Vista Calendario</field>
+        <field name="url">http://62.84.189.34:8080/</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Elemento de Menú para Vista Dashboard Calendar -->
+    <menuitem id="menu_dashboard_calendar_view" 
+              name="Vista Dashboard Calendar" 
+              sequence="3"
+              parent="hotel_management_system.menu_hotel_dashboard_root"
+              action="action_dashboard_gantt_view"/>
+
+    <!-- Menú del Panel de Habitaciones -->
+    <menuitem id="menu_room_panel_view" 
+              name="Panel de Habitaciones" 
+              sequence="4"
+              parent="hotel_management_system.menu_hotel_dashboard_root"
+              action="action_room_panel_view"/>
+
+    <menuitem id="menu_react_calendar" 
+              name="Vista Calendario" 
+              sequence="5"
+              parent="hotel_management_system.menu_hotel_dashboard_root"
+              action="action_react_calendar_view"/>
+</odoo> 

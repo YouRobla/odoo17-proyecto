@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_create_housekeeping_record" model="ir.cron">
+            <field name="name">Create Housekeeping Record</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall"
+                eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+            <field name="model_id" ref="model_hotel_booking" />
+            <field name="code">model._auto_create_house_keeping()</field>
+            <field name="state">code</field>
+        </record>
+
+        <record id="team_housekeeping_department" model="crm.team">
+            <field name="name">Housekeeping</field>
+            <field name="sequence">0</field>
+            <field name="company_id" eval="False" />
+        </record>
+
+        <record id="crm_team_member_admin_housekeeping" model="crm.team.member" forcecreate="0">
+            <field name="crm_team_id" ref="team_housekeeping_department" />
+            <field name="user_id" ref="base.user_admin" />
+        </record>
+
+        <record id="crm_team_member_demo_housekeeping" model="crm.team.member" forcecreate="0">
+            <field name="crm_team_id" ref="team_housekeeping_department" />
+            <field name="user_id" ref="base.user_demo" />
+        </record>
+    </data>
+</odoo>    

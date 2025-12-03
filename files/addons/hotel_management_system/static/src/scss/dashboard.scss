@@ -1,0 +1,233 @@
+.roomCustomUI {
+    border-top: unset !important;
+    @media (max-width: 767.98px) {
+        width: unset !important;
+        margin-left: 0px;
+    }
+
+    .desk_title {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .roomCount {
+        border-bottom: 1px solid #CED4DA;
+    }
+
+    .allBookingRoom {
+        margin-top: 19px;
+        padding-left: 20px;
+    }
+
+    .roomRowFilter {
+        margin: 10px;
+        display: flex
+    }
+
+    .o_room_filter_avatar {
+        width: 20px;
+        height: 20px;
+        border-radius: 2px;
+    }
+
+    .filterParents {
+        border: 1px solid #CED4DA;
+        border-radius: 7px;
+        padding: 10px;
+        height: auto !important;
+    }
+}
+
+#dropdownRoomOption{
+    width: 100%;
+}
+
+.request-panel-border {
+    border-bottom: 1px solid #CED4DA;
+}
+
+.check-out-requests {
+    color: $cyan-200;
+}
+
+
+.navbar-booking-container {
+    height: 116px;
+    align-items: normal !important;
+
+}
+
+.mainData {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, "Liberation Sans", Arial, "Odoo Unicode Support Noto", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 900;
+    border-radius: 9px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.dashboard-panel {
+    overflow: auto;
+}
+
+
+.selected_room_container {
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+    border-radius: 7px;
+    height: 100%;
+
+    h3 {
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    td {
+        // padding: 15px;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    tbody {
+        tr {
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        td {
+            position: relative;
+            font-size: 9px;
+
+            &:hover {
+                &:before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: -9999px;
+                    bottom: -9999px;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    z-index: -1;
+                }
+            }
+        }
+    }
+}
+
+.o_view_nocontent_booking:before {
+    @extend %o-nocontent-init-image;
+    width: 120px;
+    height: 140px;
+    background: transparent url(/hotel_management_system/static/src/img/images.jpeg) no-repeat center;
+}
+
+.o_view_nocontent_room:before {
+    @extend %o-nocontent-init-image;
+    width: 120px;
+    height: 140px;
+    background: transparent url(/hotel_management_system/static/src/img/room.png) no-repeat center;
+}
+
+.o_calendar_container.wk_hotel_container .o_calendar_header{
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+}
+
+.o_calendar_container.wk_hotel_container .o_sidebar_toggler{
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+}
+
+#roomInformation{
+    position: absolute;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    #roomInformation{
+        position: absolute;
+        z-index: 10;
+    }
+    .o_calendar_container.wk_hotel_container{
+        .o_calendar_header, .o_sidebar_toggler{
+            margin: 10px 0;
+        }
+    }
+    .custom-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.custom-grid {
+    display: grid;
+    overflow-x: auto;
+    margin: 1%;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    grid-auto-rows: auto;
+    max-height: calc(100% / 2);
+    white-space: nowrap;
+    overflow-y: auto;
+}
+@media (max-width: 576px) {
+    .custom-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 1446px){
+    .custom-grid{
+        padding-bottom: 1%;
+    }
+}
+.booking-status-heading {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+.booking-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.status-item span {
+    font-size: 14px;
+    color: #555;
+}
+
+.o_cw_body, .o_cw_popover, .status-item{
+    .initial{
+        background: #0180a5 !important;
+        color: white !important;
+    }
+    .confirm{
+        background: green !important;
+        color: white !important;
+    }
+    .allot{
+        background: #c1c166 !important;
+        color: white !important;
+    }
+    .cancel{
+        background: #808080 !important;
+        color: white !important;
+    }
+    .checkout{
+        background: red !important;
+        color: white !important;
+    }
+}

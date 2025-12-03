@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sobrescribir la vista kanban problemática del módulo calendar -->
+    <record id="res_partner_kanban_view_override" model="ir.ui.view">
+        <field name="name">res.partner.view.kanban.calendar.override</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <!-- Remover el campo meeting_count problemático -->
+            <field name="mobile" position="replace">
+                <field name="mobile"/>
+            </field>
+            <!-- Remover el botón de reuniones problemático -->
+            <xpath expr="//div[hasclass('oe_kanban_bottom_left')]" position="replace">
+                <div class="oe_kanban_bottom_left">
+                    <!-- Contenido original sin el botón de reuniones -->
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Sobrescribir la vista form problemática del módulo calendar -->
+    <record id="view_partners_form_override" model="ir.ui.view">
+        <field name="name">res_partner.view.form.calendar.override</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field eval="20" name="priority"/>
+        <field name="arch" type="xml">
+            <data>
+                <div name="button_box" position="replace">
+                    <div name="button_box">
+                        <!-- Contenido original sin el botón de reuniones -->
+                    </div>
+                </div>
+            </data>
+        </field>
+    </record>
+</odoo> 

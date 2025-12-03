@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+
+    <record id="view_order_hotel_pivot" model="ir.ui.view">
+        <field name="name">hotel.report.pivot</field>
+        <field name="model">hotel.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Booking Analysis" sample="1">
+                <field name="partner_id" type="col" />
+                <field name="check_in" interval="month" type="row" />
+                <field name="amount_untaxed" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_order_hotel_graph" model="ir.ui.view">
+        <field name="name">hotel.report.graph</field>
+        <field name="model">hotel.report</field>
+        <field name="arch" type="xml">
+            <graph string="Hotel Analysis" type="line" sample="1">
+                <field name="check_in" interval="day" />
+                <field name="amount_untaxed" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="hotel_report_view_tree" model="ir.ui.view">
+        <field name="name">hotel.report.view.list</field>
+        <field name="model">hotel.report</field>
+        <field name="arch" type="xml">
+            <tree string="Hotel Analysis">
+                <field name="check_in" widget="date" />
+                <field name="order_id" optional="show" />
+                <field name="partner_id" optional="hide" />
+                <field name="amount_untaxed" optional="hide" sum="Sum of Untaxed Total" />
+                <field name="total_amount" optional="show" sum="Sum of Total" />
+                <field name="status_bar" optional="hide" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_booking_report_all" model="ir.actions.act_window">
+        <field name="name">Booking Analysis</field>
+        <field name="res_model">hotel.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_id"></field>  <!-- force empty -->
+    </record>
+</odoo>

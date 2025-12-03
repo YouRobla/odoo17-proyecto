@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<templates id="template" xml:space="preserve">
+    <t t-name="wk_hotel_pos_expension.RoomInfoPopup">
+        <div class="popup product-info-popup">
+            <div class="modal-header">
+                <h4 class="modal-title">Room Information</h4>
+                <div class="btn" t-on-click="cancel">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+            </div>
+            <main class="body modal-body">
+                <div>
+                    <div class="mt-3 mb-4 pb-4 border-bottom text-start">
+                        <h3 class="section-title">Room No</h3>
+                        <div class="d-flex flex-column">
+                            <select style="width:100%;height:30px;" name="rooms" id="room_no_selection" t-on-change="_onChangeSelection" 
+                            class="form-control popup-input" t-att-disabled="booking_line_id">
+                                <option value=""></option>
+                                <t t-foreach="rooms" t-as="booking" t-key="booking['booking_id']">
+                                    <t t-foreach="booking['lines']" t-as="line" t-key="line['id']">
+                                        <option t-att-data-customer_id="booking['customer_id']" t-att-selected="line['id'] == booking_line_id"
+                                        t-att-value="line['product_id'][0]" t-att-data-customer="booking['booking_customer']" 
+                                        t-att-data-booking_id="booking['booking_id']" 
+                                        t-att-data-line_id="line['id']"
+                                        t-att-data-booking_name="booking['booking_name']">
+                                            <t t-esc="line['product_id'][1] + '-' + booking['booking_name']" class="global-info-title product-name"/>
+                                        </option>
+                                    </t>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-4 pb-4 border-bottom text-start">
+                        <h3 class="section-title">Booking No</h3>
+                        <div class="d-flex flex-column">
+                            <input class="form-control" style="width:100%;height:30px;" id="booking_name" placeholder="Booking No..." size="1" disabled="true"/>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-4 pb-4 border-bottom text-start">
+                        <h3 class="section-title">Booking Customer</h3>
+                        <div class="d-flex flex-column">
+                            <input class="form-control" style="width:100%;height:30px;" id="booking_customer" placeholder="Booking Customer..." size="1" disabled="true"/>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <div class="modal-footer" style="justify-content: end;">
+                <div class="button btn btn-primary" t-if="!booking_line_id" t-on-click="confirm_booking">Confirm</div>
+                <div class="button btn btn-primary" t-else="" t-on-click="remove_booking">Remove</div>
+                <div class="button cancel btn btn-secondary" t-on-click="cancel">
+                    Close
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

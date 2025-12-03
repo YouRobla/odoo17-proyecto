@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id="booking_details_report_action" model="ir.actions.report">
+            <field name="name">Download Booking Details</field>
+            <field name="model">hotel.booking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hotel_management_system.booking_details_report</field>
+            <field name="report_file">hotel_management_system.booking_details_report</field>
+            <field name="print_report_name">('Booking - %s' % (object.sequence_id))</field>
+            <field name="binding_model_id" ref="model_hotel_booking"/>
+            <field name="binding_type">report</field>
+        </record>
+    
+        <record id="action_report_booking_combine" model="ir.actions.report">
+            <field name="name">Booking Bill Combine</field>
+            <field name="model">booking.bill</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hotel_management_system.report_booking</field>
+            <field name="report_file">hotel_management_system.report_booking</field>
+            <field name="print_report_name">('Booking Bill - %s' % (object.booking_id.sequence_id))</field>
+            <field name="binding_model_id" ref="model_booking_bill"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_booking_separate" model="ir.actions.report">
+            <field name="name">Booking Bill Separate</field>
+            <field name="model">booking.bill</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hotel_management_system.report_sale_order_separate</field>
+            <field name="report_file">hotel_management_system.report_sale_order_separate</field>
+            <field name="print_report_name">('Booking Bill - %s' % (object.booking_id.sequence_id))</field>
+            <field name="binding_model_id" ref="model_booking_bill"/>
+            <field name="binding_type">report</field>
+        </record>
+        
+        <record id="action_report_booking_detailed_bill" model="ir.actions.report">
+            <field name="name">Booking Bill Detailed Bill</field>
+            <field name="model">booking.bill</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hotel_management_system.report_sale_order_detailed_bill</field>
+            <field name="report_file">hotel_management_system.report_sale_order_detailed_bill</field>
+            <field name="print_report_name">('Detailed Bill - %s' % (object.booking_id.sequence_id))</field>
+            <field name="binding_model_id" ref="model_booking_bill"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

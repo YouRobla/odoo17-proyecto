@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="hotel_facility_view_tree">
+            <field name="name">hotel.facility.list</field>
+            <field name="model">hotel.facility</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Hotel Facility">
+                    <field name='name'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_hotel_facility_kanban" model="ir.ui.view">
+            <field name="name">hotel.facility.kanban</field>
+            <field name="model">hotel.facility</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="logo"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill px-0 pb-0 border rounded-3 border-primary">
+                                <div class="oe_kanban_details d-flex flex-column">
+                                    <div class="o_kanban_record_top px-2 h-50">
+                                        <field name="logo" widget='image' class='float-start'></field>
+                                        <div class="o_kanban_record_headings ps-4 pe-2 mt-3">
+                                            <div class="oe_kanban_details text-primary">
+                                                <strong>
+                                                    <field name="name"/>
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="hotel_facility_view_form">
+            <field name="name">hotel.facility.form</field>
+            <field name="model">hotel.facility</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Hotel Facility">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name='name' required='true'/>
+                                <!-- <field name='price'/> -->
+                            </group>
+                            <group>
+                                <field name="logo" widget="image" class="oe_avatar"/>
+                            </group>
+                        </group>
+
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_hotel_facility_menu" model="ir.actions.act_window">
+            <field name="name">Facilities</field>
+            <field name="res_model">hotel.facility</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+       
+    </data>
+</odoo>

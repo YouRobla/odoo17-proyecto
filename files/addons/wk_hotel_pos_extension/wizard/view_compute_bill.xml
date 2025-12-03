@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id="view_compute_bill_form_inherit" model="ir.ui.view">
+            <field name="name">pos.compute.bill.form</field>
+            <field name="model">booking.bill</field>
+            <field name="inherit_id" ref="hotel_management_system.view_compute_bill"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_ids']" position="after">
+                    <h2 class="modal-title bg-primary text-light p-1 mb-1 text-break">Pos Order</h2>
+                    <field name="pos_order_ids"/>
+                </xpath>
+                <xpath expr="//field[@name='order_ids']" position="before">
+                    <h2 class="modal-title bg-primary text-light p-1 mb-1 text-break">Sale Order</h2>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

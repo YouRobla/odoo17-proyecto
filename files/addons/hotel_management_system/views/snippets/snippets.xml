@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <template id="hotel_snippetace_into_bar" inherit_id="website.snippets" name="Hotel Management Snippetbar">
+        <xpath expr="//div[@id='snippet_structure']" position="before">
+            <div id="hotel_content" class="o_panel">
+                <div class="o_panel_header">Hotel Snippets</div>
+                    <div class="o_panel_body">
+                        <t t-snippet="hotel_management_system.hotel_homepage_snippet"
+                            t-thumbnail="/hotel_management_system/static/src/img/snippets_thumbs/header_bg.png"/>
+                        <t t-snippet="hotel_management_system.s_hotel_homepage_room_snippet"
+                            t-thumbnail="/hotel_management_system/static/src/img/snippets_thumbs/header_bg.png"/>
+                        <t t-snippet="hotel_management_system.custom_trending_rooms"
+                            string="Hotel Dynamic Snippet"
+                            t-thumbnail="/hotel_management_system/static/src/img/snippets_thumbs/header_bg.png"/>
+                        <t t-snippet="hotel_management_system.multiple_hotel_snippet"
+                            string="Multi Hotel Snippet"
+                            t-thumbnail="/hotel_management_system/static/src/img/snippets_thumbs/header_bg.png"/>
+                    </div>
+                </div>
+        </xpath>
+    </template>
+
+    <template id="hotel_homepage_snippet" name="Hotel Homepage snippet">
+        <section class="s_hotel_banner s_parallax_is_fixed"
+            data-scroll-background-ratio="1"
+            style="background-image: url('/hotel_management_system/static/src/img/snippets_thumbs/header_bg.png');">
+            <div class="container-fluid">
+                <div class="jumbotron hotelBg_jumb ms-auto me-auto" data-name="Box">
+                    <div class="">
+                        <div class="mt64">
+                            <div class="text-center text-light">
+                                <p id="hotel_management_msg">WELCOME TO</p>
+                                <h1 id="hotel_management_msg">
+                                    Hotel Management System
+                                </h1>
+                            </div>
+                            <div id="basic_info_div">
+                                <p class="basic_info text-light text-center">Lorem Ipsum is simply
+                                    dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    is simply dummy text of the printing and typesetting industry.
+                                    Lorem Ipsum is simply dummy text of the printing and typesetting
+                                    industry. Lorem Ipsum is simply dummy text of the printing and
+                                    typesetting industry. </p>
+                            </div>
+                        </div>
+
+                        <div id="homepage_booking_panel">
+                            <form action="/shop">
+                                <div class="search-config">
+                                    <div class="custom-select">
+                                        <div class="label">
+                                            <i class="fa fa-map-marker"/>
+                                            Select Hotel
+                                        </div>
+                                        <input type="number" required="required" name="hotel_id" style="display:none;" id="hotel_id"/>
+                                        <input required="required" type="text" class="form-control" id="selected_hotel" readonly="readonly" placeholder="Select Hotel" />
+                                        <div class="dropdown-content" id="hotel_dropdown"></div>
+                                    </div>
+
+                                    <div class="date-conatiner">
+                                        <div class="label">
+                                            <i class="fa fa-calendar"/>
+                                            Select Check In
+                                        </div>
+                                        <input type="text" id="check_in" required="required" placeholder="Select Check In" class="form-control datetimepicker-input" name="check_in" data-widget="datetime-picker" data-widget-type="date"/>
+                                    </div>
+
+                                    <div class="date-conatiner">
+                                        <div class="label">
+                                            <i class="fa fa-calendar"/>
+                                            Select Check Out
+                                        </div>
+                                        <input type="text" id="check_out" required="required" placeholder="Select Check Out" class="form-control datetimepicker-input" name="check_out" data-widget="datetime-picker" data-widget-type="date"/>
+                                    </div>
+
+                                    <div class="travellers-container">
+                                        <div class="label">
+                                            <i class="fa fa-users"/>
+                                            Select Members
+                                        </div>
+
+                                        <input id="travellers-input" class="form-control" type="text" readonly="readonly" placeholder="0 members" />
+
+                                        <div id="travellers-dropdown" class="travellers-dropdown">
+                                            <div class="traveller-field">
+                                                <label for="wk_adult">Adults (Greater than 18)</label>
+                                                <input class="form-control" min="0" value="0" name="adult" id="wk_adult" type="number" />
+                                            </div>
+                                            <div class="traveller-field">
+                                                <label for="wk_child">Children (Less than 18)</label>
+                                                <input class="form-control" min="0" value="0" name="child" id="wk_child" type="number" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn">
+                                        <i class="fa fa-search"/>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="home_rooms" name="Website Room Displate">
+        <div class='row ms-md-4 me-md-4'>
+            <t t-foreach="product_ids" t-as='product'>
+                <t t-set="combination_info"
+                    t-value="product._get_combination_info(only_template=True, add_qty=add_qty or 1)" />
+                <div class='col-12 col-md-4 col-sm-6 col-lg-4' id="ProductinBox">
+                    <div style="border-radius:6px;margin-bottom:30px;overflow:hidden">
+                        <div class="o_dynamic_product_hovered room_dynamic_hover"
+                            t-if="product.image_1920">
+                            <img t-att-src="image_data_uri(product.image_1920)"
+                                class="img img-fluid w-100 home_room_image" t-att-alt="product.name"
+                                style="min-height: 210px;max-height: 210px;" />
+                        </div>
+                        <div t-else="">
+                            <img class="img img-fluid w-100 product_snippet-size home_room_image"
+                                t-attf-src="/web/image/product.template/{{product.id}}/image_1024"
+                                t-att-alt="product.name" />
+                        </div>
+                        <div class="pt-2">
+                            <div class="p-2 snippet-room-info">
+                                <div>
+                                    <strong t-esc='product.name' />
+                                </div>
+                                <div class='d-flex justify-content-between'>
+                                    <div>
+                                        <span t-if="combination_info['price']"
+                                            t-esc="combination_info['price']"
+                                            t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                                        <span>/night</span>
+                                    </div>
+                                    <div>
+                                        <span>
+                                            <i class="fa fa-users" />
+                                            <span>
+                                                <span> No. Of Members:</span>
+                                                <t t-esc='product.max_adult' />
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div class='text-justify mt-2 mb-2'>
+                                    <span t-esc='product.product_website_description' />
+                                </div>
+                                <div>
+                                    <a t-att-href="product.website_url"
+                                        class='btn btn-primary home_room_image'>View
+                                        More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </t>
+        </div>
+    </template>
+
+    <template id="custom_trending_rooms" name="Trending Rooms snippet">
+        <section class="mb32 swiper_data trendingRoomSection">
+            <div class="container-fluid swiper_data">
+                <div class="jumbotron ms32 me32 mt32 swiper_data" data-name="Box">
+                    <div class="text-md-center swiper_data row">
+                        <div class="col-12">
+                            <h1 class="ourRoomsbodyhead swiper_data">
+                                Trending Rooms
+                            </h1>
+                        </div>
+                        <div class="col">
+                            <p class="ourRoomsbodyTitle swiper_data">Lorem Ipsum is simply dummy
+                                text of the
+                                printing and typesetting industry. Lorem Ipsum is simply dummy text
+                                of the printing and typesetting industry. Lorem Ipsum is simply
+                                dummy text of the printing and typesetting industry. Lorem Ipsum is
+                                simply dummy text of the printing and typesetting industry. </p>
+                        </div>
+                    </div>
+                    <div class="trending_room_data w-100 mx-auto">
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="multiple_hotel_snippet" name="Multi Hotel Support">
+        <section class="container" id="multi_hotel_container">
+            <div class="mt-2 mh-container">
+                <div class="" data-name="Card">
+                    <div class="text-md-center">
+                        <div class="col-12">
+                            <h1 class="ourRoomsbodyhead swiper_data">
+                                Choose Our Hotels
+                            </h1>
+                        </div>
+                        <div class="mh-card-box">
+                        </div>
+                    </div>
+                    <div class="w-100 mx-auto">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="hotel_trending_products_test" name="Hotel Trending Products snippet test">
+        <section class="sectionWrapper">
+            <section class="swiper" style="overflow-x:hidden !important;">
+                <div class="swiper_data" data-swiper-parallax="600"
+                    data-swiper-parallax-scale="0.85"></div>
+
+                <div class="swiper-wrapper">
+                    <t t-foreach="product_ids" t-as='product'>
+                        <figure class="swiper-slide">
+
+                            <div class="cardPopout" data-swiper-parallax="30"
+                                data-swiper-parallax-scale="0.9" data-swiper-parallax-opacity="0.8"
+                                data-swiper-parallax-duration="1000">
+
+                                <t t-if="product.image_1920">
+                                    <img class="trending_room_image swiper_data"
+                                        t-att-src="image_data_uri(product.image_1920)"
+                                        width="800" height="400" data-swiper-parallax="80"
+                                        data-swiper-parallax-duration="2000"
+                                        t-att-alt="product.name"
+                                    />
+                                </t>
+                                <t t-else="">
+                                    <img class="trending_room_image swiper_data"
+                                        t-attf-src="/web/image/product.template/{{product.id}}/image_1024"
+                                        t-att-alt="product.name" width="800" height="400"
+                                        data-swiper-parallax="80"
+                                        data-swiper-parallax-duration="2000" />
+                                </t>
+
+                                <h2 class="title" data-swiper-parallax="80"
+                                    data-swiper-parallax-duration="1000">
+                                    <t t-esc='product.name' />
+                                </h2>
+
+                                <h4 class="subtitle" data-swiper-parallax="80"
+                                    data-swiper-parallax-duration="1500">
+                                    <span class="fa fa-eye mx-2"></span>
+                                    <t t-esc='product.count' />
+                                </h4>
+
+                                <figcaption data-swiper-parallax="80"
+                                    data-swiper-parallax-duration="1250">
+
+                                    <p>
+                                        <t t-esc="product.product_website_description" />
+                                    </p>
+                                </figcaption>
+
+                                <a class="swiper_data" t-att-href="product.website_url"
+                                    title="Continue Reading"
+                                    data-swiper-parallax="80" data-swiper-parallax-opacity="0.2"
+                                    data-swiper-parallax-duration="1750"> Continue Reading <svg
+                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-arrow-right-short"
+                                        viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+                                    </svg>
+                                </a>
+
+                            </div>
+
+                        </figure>
+
+
+                    </t>
+
+                </div>
+            </section>
+        </section>
+    </template>
+</odoo>

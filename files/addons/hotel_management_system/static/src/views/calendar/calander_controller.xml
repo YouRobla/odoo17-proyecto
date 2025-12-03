@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<templates xml:space="preserve">
+    <t t-name="hotel_management_system.EventData" t-inherit="web.CalendarCommonRenderer.event" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_event_title')]" position="before">
+            <img class="bg-light me-1" alt="Avatar" t-if="model" t-attf-src="/web/image/res.partner/{{ rawRecord.partner_id[0] }}/image_128" width="10" height="10"/>
+        </xpath>
+    </t>
+
+    <t t-name="hotel_management_system.FilterBasedOnBooking" t-inherit="web.CalendarController" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_calendar_container')]/div/div" position="before">
+            <div t-if="bookingModel()" class="roomCustomUI d-md-block mb-2" style="width:242px">
+                <div class="filterParents selected_room_container">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownRoomOption" data-bs-toggle="dropdown" aria-expanded="false">
+                            Room Type (<t t-esc="model.meta.productData.room_data.length"/>
+)
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-primary" aria-labelledby="dropdownRoomOption">
+                            <t t-if="model.meta.productData.room_data" t-foreach="model.meta.productData.room_data" t-as="room" t-key="room['id']">
+                                <li>
+                                    <a t-attf-class="dropdown-item" t-att-data-id="room.id" t-on-click="fetchRoomTypeData">
+                                        <t t-esc="room.name"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                            </t>
+                        </ul>
+                    </div>
+                    <div class="allBookingRoom d-none">
+                        <t t-if="model.meta.productData.room_data" t-foreach="model.meta.productData.room_data" t-as="room" t-key="room['id']">
+                            <div class="roomRowFilter">
+                                <span>
+                                    <t t-set="room" t-value="room"/>
+                                    <t t-call="hotel_management_system.FilterBasedOnBooking.filter" />
+                                </span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <div class="roomInformation" id="roomInformation">
+                </div>
+
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('o_calendar_container')]" position="before">
+            <div class="d-md-block dashboard-panel" t-if="bookingModel()">
+                <t t-set="checkout" t-value="0"/>
+                <t t-set="checkin" t-value="0"/>
+                <div class="row m-2 navbar-booking-container">
+                    <div class="col-md-3 col-12 mb-sm-1 checkin-portion selected-date-checkin navbar-booking-card">
+                        <div class="border selected-date-checkin selected_room_container border-grey text-light mainData text-center align-items-center p-5" t-on-click="openViewonClick">
+                            <span class="selected-date-checkin check-in-info">
+                                <i class="selected-date-checkin fa fa-sign-in"></i>
+ Check-in Requests
+                            </span>
+                            <span class="selected-date-checkin badge bg-warning" id="current_date_check_in">
+                                <t t-esc="model.meta.productData.current_date_check_in"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12 mb-sm-1 selected-date-checkout checkout-portion navbar-booking-card">
+                        <div class="border selected-date-checkout selected_room_container border-grey mainData text-center text-light align-items-center p-5" t-on-click="openViewonClick">
+                            <span class=" check-out-info">
+                                <i class="fa fa-sign-out"></i>
+ Check-out Requests
+                            </span>
+                            <span class="badge bg-warning" id="current_date_check_out">
+                                <t t-esc="model.meta.productData.current_date_check_out"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12 mb-sm-1 available-portion navbar-booking-card">
+                        <div t-on-click="openViewonClick" class="border selected_room_container text-light border-grey mainData text-center align-items-center p-5 total_available_room total_available">
+                            <a>
+                                <span class="total_available total_available_room">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="total_available total_available_room mb-1 pe-1 bi bi-calendar2-check" viewBox="0 0 16 16">
+                                        <path d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z"/>
+                                        <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V4z"/>
+                                    </svg>Total Available
+                                </span>
+                                <span class="badge bg-warning total_available_room" id="total_available_room">
+                                    <t t-esc="model.meta.productData.available_rooms"/>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12 mb-sm-1 booked-portion navbar-booking-card">
+                        <div t-on-click="openViewonClick" class="border selected_room_container text-light border-grey mainData text-center align-items-center p-5 total_booked total_available total_booked">
+                            <a>
+                                <span class="total_available total_booked">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="total_available total_booked mb-1 pe-1 bi bi-calculator-fill" viewBox="0 0 16 16">
+                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5zm0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5h-1z"/>
+                                    </svg>Total Booked Room
+                                </span>
+                                <span class="badge bg-warning" id="total_booked_room">
+                                    <t t-esc="model.meta.productData.booked_room"/>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//div[@class='o_calendar_sidebar']//FilterPanel" position="before">
+            <t t-if="bookingModel()">
+                <div class="booking-status-heading">Booking Legends</div>
+                <div class="booking-status-list">
+                    <div class="status-item">
+                        <span class="status-dot initial"></span>
+                        <span>Draft</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot confirm"></span>
+                        <span>Confirm</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot allot"></span>
+                        <span>Room Allocated</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot cancel"></span>
+                        <span>Cancel</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot checkout"></span>
+                        <span>Checkout</span>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    
+    <t t-name="hotel_management_system.FilterBasedOnBooking.filter" owl="1">
+        <div class="o_calendar_filter_item w-100 mb-2" t-att-data-value="room['id']">
+            <div class="">
+                <input class="form-check-input d-none" type="checkbox" t-attf-id="o_booking_calendar_filter_item_{{room['id']}}" checked="true"/>
+                <label class="form-check-label text-light" t-attf-for="o_booking_calendar_filter_item_{{room['id']}}">
+                    <t t-esc="room['name']"/>
+                </label>
+                <span class="badge bg-light ms-1">
+                    <t t-esc="room.product_variant_count"/>
+                </span>
+            </div>
+        </div>
+    </t>
+</templates>

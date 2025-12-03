@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="1">
+        <!-- Service Product -->
+        <record id="product_hotel_service" model="product.product">
+            <field name="name">Service</field>
+            <field name="type">service</field>
+            <field name="list_price">0.0</field>
+            <field name="taxes_id" eval="[(6, 0, [])]" />
+        </record>
+
+        <!-- Agent Bill Product -->
+        <record id="product_agent_bill" model="product.product">
+            <field name="name">Agent Bill</field>
+            <field name="type">service</field>
+            <field name="list_price">0.0</field>
+            <field name="taxes_id" eval="[(6, 0, [])]" />
+        </record>
+
+        <record id="menu_hotels" model="website.menu">
+            <field name="name">Hotel</field>
+            <field name="url">/hotels</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">30</field>
+        </record>
+    </data>
+</odoo>

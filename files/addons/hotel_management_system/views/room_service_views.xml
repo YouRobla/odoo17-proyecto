@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id="inherit_View_order_form" model="ir.ui.view">
+            <field name="name">room.service.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_term_id']"
+                    position="after">
+                    <field name="booking_id" invisible="1"/>
+                    <field name="booking_line_id" readonly="state != 'draft'"
+                        invisible="not booking_id or not booking_line_id"
+                        domain="[('booking_id','=',booking_id),('booking_id.status_bar','=','allot')]" />
+
+                </xpath>
+                <xpath expr="//group[@name='partner_details']//field[@name='partner_shipping_id']"
+                    position="attributes">
+                    <attribute name="readonly">booking_line_id != False</attribute>
+                </xpath>
+                <xpath expr="//group[@name='partner_details']//field[@name='partner_invoice_id']"
+                    position="attributes">
+                    <attribute name="readonly">booking_line_id != False</attribute>
+                </xpath>
+                <xpath
+                    expr="//group[@name='partner_details']//field[@name='sale_order_template_id']"
+                    position="attributes">
+                    <attribute name="readonly">booking_line_id != False</attribute>
+                </xpath>
+                <xpath expr="//group[@name='order_details']//field[@name='validity_date']"
+                    position="attributes">
+                    <attribute name="readonly">booking_line_id != False</attribute>
+                </xpath>
+                <xpath expr="//group[@name='order_details']//field[@name='date_order']"
+                    position="attributes">
+                    <attribute name="readonly">booking_line_id != False</attribute>
+                </xpath>
+                <xpath expr="//group[@name='order_details']//field[@name='payment_term_id']"
+                    position="attributes">
+                    <attribute name="readonly">booking_line_id != False</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="room_service_action" model="ir.actions.act_window">
+            <field name="name">Room Service</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="domain">[('booking_line_id', '!=', False)]</field>
+        </record>
+        
+    </data>
+</odoo>

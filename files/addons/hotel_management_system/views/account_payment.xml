@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+    <data>
+        <record id="view_form_amount_payment" model="ir.ui.view">
+            <field name="name">amount.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="available_journal_ids" invisible="1"/>
+                    <field name="available_payment_method_line_ids" invisible="1"/>
+                    
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="payment_type" />
+                                <field name="partner_id" readonly='1' />
+                                <field name='date' />
+                            </group>
+
+                            <group>
+                                <label for="amount" />
+                                <div name="amount_div" class="o_row">
+                                    <field name="amount" />
+                                    <field name="currency_id" options="{'no_create': True, 'no_open': True}" required="1" />
+                                </div>
+                                <field name='journal_id' domain="[('id', 'in', available_journal_ids)]" options="{'no_create': True, 'no_open': True}" />
+                                <field name='payment_method_line_id' options="{'no_create': True, 'no_open': True}" />
+                            </group>
+                        </group>
+                    </sheet>
+
+                    <footer>
+                        <button name="register_payment" string='Advance Payment' type="object" class="oe_highlight"></button>
+                        <button special="cancel" class="oe_highlight" icon="fa-archive" string="Close" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

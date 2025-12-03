@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <template id="remark_page" name="Feedback Remark">
+        <t t-call="website.layout">
+            <div class="container mt-5 hotel-feedback-card oe_website_sale">
+                <div class="d-flex mb-5" style="justify-content: space-between;">
+                    <h3 class="hotel-feedback-title">Hotel Feedback Form</h3>
+                    <h3 class="hotel-feedback-title"><t t-esc="booking.sequence_id"/></h3>
+                </div>
+                <form action="/remark/request" method="POST">
+                    <input type="hidden" class="booking_id" name="booking_id" t-att-value="booking.id" />
+                    <input type="hidden" class="feedback_count" name="feedback_count" t-att-value="5" />
+
+
+                    <div class="booking-info row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="info-card p-3 shadow-sm rounded">
+                                <div class="info-label">Guest</div>
+                                <div class="info-value"><t t-esc="booking.partner_id.name"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 shadow-sm rounded">
+                                <div class="info-label">Hotel</div>
+                                <div class="info-value"><t t-esc="booking.hotel_id.name"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 shadow-sm rounded">
+                                <div class="info-label">Check In</div>
+                                <div class="info-value"><t t-esc="booking.check_in"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 shadow-sm rounded">
+                                <div class="info-label">Check Out</div>
+                                <div class="info-value"><t t-esc="booking.check_out"/></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-4 text-left">
+                        <label class="form-label fw-bold">Please rate your stay overall</label>
+                        <div style="font-size:40px;"
+                            t-attf-class="o-mail-custom-stars enabled o_website_rating_static #{show_rating_mode if show_rating_mode and fill_star==0 else ''} #{'d-none' if show_rating_mode and show_rating_mode=='hidden' else ''}">
+                            <t t-foreach="range(0, 5)" t-as="num">
+                                <i class="fa fa-star" role="img" aria-label="One star"
+                                    title="One star"></i>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Any Comments?</label>
+                        <textarea name="requestMessage" id="requestMessage"
+                            class="form-control" rows="4" placeholder="Type here..."></textarea>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-5">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="feedback_thank_you" name="Feedback Thank You">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <h2>Thank You!</h2>
+                <p>Your feedback is valuable to us. We appreciate your time.</p>
+                <a href="/" class="btn btn-primary">Return to Home</a>
+            </div>
+        </t>
+    </template>
+
+    <template id="feedback_already_accepted" name="Feedback Thank You">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <h2>Feedback Already Accepted !</h2>
+                <p>Your feedback has been already accepted.</p>
+                <a href="/" class="btn btn-primary">Return to Home</a>
+            </div>
+        </t>
+    </template>
+</odoo>

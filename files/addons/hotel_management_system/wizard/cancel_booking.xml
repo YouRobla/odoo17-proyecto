@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="view_cancel_booking" model="ir.ui.view">
+        <field name="name">Booking Cancellation</field>
+        <field name="model">booking.cancel</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <group>
+                    <field name="cancellation_reason"/>
+                </group>
+                <footer>
+                <button name="confirm_booking_cancel" class="btn btn-success btn-sm" string="Confirm" type="object"/>
+                    <button string="Close" class="btn btn-danger btn-sm" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_cancel_booking" model="ir.actions.act_window">
+        <field name="name">Booking Cancellation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">booking.cancel</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

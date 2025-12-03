@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <!-- Snippet Data -->
+        <function model="website" name="hotel_management_system_snippet_data" />
+
+        <!-- Room policy Data -->
+        <function model="product.template" name="get_room_multiline_policy_description" />
+
+        <!--  -->
+        <function model="website" name="get_wire_transfer" />
+
+        <function model="ir.config_parameter" name="set_param"
+            eval="('hotel_management_system.checkout_hours', '12.00')" />
+
+        <record model="ir.ui.view" id="guest_info_tree_view">
+            <field name="name">guest.info.list.view</field>
+            <field name="model">guest.info</field>
+            <field name="arch" type="xml">
+                <tree string="Members">
+                    <field name="name" />
+                    <field name="gender" />
+                    <field name="age" />
+                    <field name="is_adult" />
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="guest_info_form_view">
+            <field name="name">guest.info.form.view</field>
+            <field name="model">guest.info</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Members">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1" />
+                            <field name="age" required="1" help="The member with age less than 18 will be considered as child and above 18 will be considered as Adult"/>
+                            <field name="gender" />
+                            <field name="is_adult" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

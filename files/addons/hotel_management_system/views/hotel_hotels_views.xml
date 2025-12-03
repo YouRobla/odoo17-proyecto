@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <odoo>
+            <record id="view_hotel_hotels_kanban" model="ir.ui.view">
+                <field name="name">hotel.hotels.kanban</field>
+                <field name="model">hotel.hotels</field>
+                <field name="arch" type="xml">
+                    <kanban sample="1">
+                        <field name="image"/>
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="hotel_type_id"/>
+                        <field name="address"/>
+                        <field name="is_published"/>
+                        <field name="rating_count"/>
+                        <field name="rating_percentage_satisfaction"/>
+                        
+                        <templates>
+                            <t t-name="kanban-box" class="flex-row">
+                                <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                                    <div class="o_kanban_image_fill_left d-none d-md-block o_kanban_image_full">
+                                        <img t-attf-src="#{kanban_image('hotel.hotels', 'image', record.id.raw_value)}" style="object-fit:cover;" role="img" t-att-alt="record.id.value"/>
+                                    </div>
+                                    <div class="oe_kanban_details d-flex flex-column justify-content-between">
+                                        <div>
+                                            <strong class="o_kanban_record_title oe_partner_heading"><field name="name"/></strong>
+
+                                            <div class="text-muted small">
+                                                <t t-if="record.partner_id.raw_value">
+                                                    <field name="partner_id" widget="res_partner_many2one"/>
+                                                </t>
+                                            </div>
+
+                                            <div class="text-muted small">
+                                                <t t-if="record.hotel_type_id.raw_value">
+                                                    <field name="hotel_type_id" class="m-0"/>
+                                                </t>
+                                            </div>
+
+                                            <field name="address" class="mb-0 fw-bold fs-5"/>
+                                            <div class="o_kanban_record_bottom">
+                                                <div t-if="record.rating_count.raw_value > 0" class="oe_kanban_bottom_right">
+                                                    <a name="action_view_rating" type="object" tabindex="10">
+                                                        <i class="fa fa-smile-o text-success" title="Percentage of happy ratings" role="img" aria-label="Happy face"/> <t t-esc="record.rating_percentage_satisfaction.raw_value"/>%
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </templates>
+                    </kanban>
+                </field>
+            </record>
+            
+            <record id="view_hotel_hotels_form" model="ir.ui.view">
+                <field name="name">hotel.hotels.form</field>
+                <field name="model">hotel.hotels</field>
+                <field name="arch" type="xml">
+                    <form string="Hotels">
+                        <header>
+                            <button class="oe_highlight" type="object"
+                                name="action_open_add_rooms_wizard"
+                                icon="fa-home" string="Add Rooms"/>
+                        </header>
+                        <sheet>
+                            <field name="is_published" invisible="1"/>
+                            <field name="rating_count" invisible="1"/>
+                            
+                            <div class="oe_button_box" name="button_box">
+                                <button class="oe_button_box" type="object"
+                                        name="action_open_rooms_list"
+                                        icon="fa-bed"
+                                        help="View all rooms listed under this hotel">
+                                    <div class="o_stat_info">
+                                        <span class="o_stat_text">View Rooms</span>
+                                    </div>
+                                </button>
+                                <button name="action_toggle_is_published"
+                                        invisible="not is_published"
+                                        class="oe_stat_button"
+                                        type="object"
+                                        icon="fa-globe"
+                                        help="This hotel is published on the website. Click to unpublish.">
+                                    <div class="o_stat_info o_field_widget">
+                                        <span class="o_stat_text text-success">Published</span>
+                                    </div>
+                                </button>
+                                <button name="action_toggle_is_published"
+                                        invisible="is_published"
+                                        class="oe_stat_button"
+                                        type="object"
+                                        icon="fa-eye-slash"
+                                        help="This hotel is not published on the website. Click to publish.">
+                                    <div class="o_stat_info o_field_widget">
+                                        <span class="o_stat_text text-danger">Unpublished</span>
+                                    </div>
+                                </button>
+                                <button class="oe_button_box" type="object"
+                                        name="action_view_rating"
+                                        invisible="rating_count == 0"
+                                        icon="fa-smile-o"
+                                        help="View customer ratings and satisfaction for this hotel">
+                                    <div class="o_stat_info">
+                                        <field string="% Happy" name="rating_percentage_satisfaction" widget="statinfo"/>
+                                    </div>
+                                </button>
+                                <button name="action_go_to_website"
+                                        class="oe_stat_button"
+                                        type="object"
+                                        icon="fa-globe"
+                                        help="Open this hotel page directly on the website">
+                                    <div class="o_stat_info o_field_widget">
+                                        <span class="o_stat_text text-success">Go To Website</span>
+                                    </div>
+                                </button>
+                            </div>
+                            <field name="image" widget="image" class="oe_avatar" />
+                            <div class="oe_title">
+                                <h1>
+                                    <div class="d-flex">
+                                        <field class="text-break" name="name" options="{'line_breaks': False}" widget="text" placeholder="e.g. Atlantis The Royal"/>
+                                    </div>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" placeholder="Type to find a customer..."/>
+                                    <field name='hotel_type_id' />
+                                    <field name='tagline' />
+                                </group>
+                                <group>
+                                    <field name="website_id"></field>
+                                    <field name="default_timezone"></field>
+                                </group>
+                            </group>
+                            <notebook>
+                                <page string="Rooms">
+                                    <field name="room_ids">
+                                        <tree>
+                                            <field name="name" />
+                                            <field name="facility_ids" readonly='True' widget="many2many_tags" />
+                                            <field name="product_variant_count" string="Number of Rooms" widget="badge"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string='Extra Info'>
+                                    <group colspan="2">
+                                        <field name="review_display_limit"/>
+                                    </group>
+                                    <group colspan="2" name="Hotel Banner" string="Hotel Banner">
+                                        <field
+                                            colspan="2"
+                                            widget="image" options="{'size': [200, 200]}"
+                                            name="banner"
+                                            context="{'default_name': name}"
+                                            add-label="Add Banner"
+                                            nolabel="1"
+                                        />
+                                    </group>
+
+                                    <group colspan="2" name="Hotel Images" string="Hotel Media">
+                                        <field
+                                            colspan="2"
+                                            name="hotel_image_ids"
+                                            class="o_website_sale_image_list"
+                                            context="{'default_name': name}"
+                                            mode="kanban"
+                                            add-label="Add Media"
+                                            nolabel="1"
+                                            widget="x2_many_media_viewer"
+                                            options="{'convert_to_webp': True}"
+                                        />
+                                    </group>
+                                </page>
+                                <page string='Description'>
+                                    <field name="description"></field>
+                                </page>
+                                <page string='Policies'>
+                                    <field name="policies"></field>
+                                </page>
+                                <page string="Advance Payment Configs">
+                                    <group>
+                                        <group>
+                                            <field name="required_advance_payment" />
+                                        </group>
+                                        <group>
+                                            <field name="advance_payment_type"
+                                                invisible="not required_advance_payment" />
+                                            <field name="advance_payment_value"
+                                                invisible="(not required_advance_payment) or (advance_payment_type != 'fixed')"
+                                                required="advance_payment_type == 'fixed'" />
+                                            <field name="advance_payment_percentage"
+                                                invisible="(not required_advance_payment) or (advance_payment_type != 'percentage')"
+                                                required="advance_payment_type == 'percentage'" />
+                                        </group>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </sheet>
+                        <chatter />
+                    </form>
+                </field>
+            </record>
+
+            <record id="view_hotel_hotels_list" model="ir.ui.view">
+                <field name="name">hotel.hotels.list</field>
+                <field name="model">hotel.hotels</field>
+                <field name="arch" type="xml">
+                    <tree string="Hotels">
+                        <field name="name" />
+                        <field name="partner_id" />
+                        <field name="address" />
+                        <field name="is_published" widget="boolean_toggle"/>
+                    </tree>
+                </field>
+            </record>
+
+            <record id="action_hotel_hotels" model="ir.actions.act_window">
+                <field name="name">Hotels</field>
+                <field name="res_model">hotel.hotels</field>
+                <field name="view_mode">kanban,tree,form</field>
+            </record>
+
+            <record id="action_hotel_management_menu" model="ir.actions.act_window">
+                <field name="name">Hotels</field>
+                <field name="res_model">hotel.hotels</field>
+                <field name="view_mode">kanban,form,tree</field>
+                <field name="view_id" ref="hotel_management_system.view_hotel_hotels_kanban"/>
+            </record>
+
+            <record id="action_hotel_management_booking_product" model="ir.actions.act_window">
+                <field name="name">Rooms</field>
+                <field name="res_model">product.template</field>
+                <field name="view_mode">kanban,form,tree</field>
+                <field name="domain">[('is_room_type','=',True)]</field>
+                <field name="view_id" ref="product.product_template_kanban_view"/>
+                <field name="context">{'default_is_room_type': True}</field>
+                <field name="help" type="html">
+                    <p class="o_view_nocontent_room">
+                Add new Room
+                    </p>
+                </field>
+            </record>
+        </odoo>
+    </data>
+</odoo>

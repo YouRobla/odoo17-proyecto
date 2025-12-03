@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+
+    <template id="inherit_report_booking_pos_detailed" inherit_id="hotel_management_system.report_sale_order_detailed_bill" name="Hotel booking Report pos detailed inherit">
+        <xpath expr="/t" position="inside">
+            <t t-foreach="docs.pos_order_ids" t-as="doc">
+                <t t-call="wk_hotel_pos_extension.pos_report_template" t-lang="doc.partner_id.lang"/>
+            </t>
+        </xpath>
+    </template>
+    <template id="inherit_report_booking_document" inherit_id="hotel_management_system.report_booking_document" name="Hotel booking Report inherit">
+        <xpath expr="//tr[hasclass('is-subtotal')]" position="before">
+            <t t-foreach="doc.pos_order_ids" t-as="line">
+                <t t-set="price" t-value="line.pricelist_id.currency_id._convert(line.amount_total, line.booking_id.pricelist_id.currency_id, line.env.company, datetime.datetime.now())"/>
+                <t t-set="current_subtotal" t-value="current_subtotal + price"/>
+
+                <tr class='bg-200 font-weight-bold o_line_section'>
+                    <td name="td_name">
+                    </td>
+                    <td name="td_quantity" class="text-right">
+                        <span t-field="line.name"/>
+                    </td>
+                    <td name="td_priceunit" class="text-right">
+                        <span t-field="line.date_order"/>
+                    </td>
+                    <td name="amount_total" class="text-right">
+                        <span>
+                            <t t-esc="price"/>
+                        </span>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </template>
+    <template id="pos_report_template">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <t t-set="address">
+                <div t-field="doc.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                <p t-if="doc.partner_id.vat">
+                    <t t-esc="doc.partner_id.company_id.country_id.vat_label or 'Tax ID'"/>
+:                    <span t-field="doc.partner_id.vat"/>
+                </p>
+            </t>
+            <div class="page">
+                <div class="oe_structure"/>
+
+                <h2 class="mt64">
+                    <span>Pos Order # </span>
+                    <t t-esc="doc.name"/>
+                </h2>
+
+                <div class="row mt64 mb64" id="informations">
+                    <div class="col-auto col-3 mw-100 mb-2">
+                        <strong>Check in Date:</strong>
+                        <p class="m-0" t-field="doc.booking_id.check_in" t-options='{"widget": "date"}'/>
+                    </div>
+                    <div class="col-auto col-3 mw-100 mb-2">
+                        <strong>Check out Date:</strong>
+                        <p class="m-0" t-field="doc.booking_id.check_out" t-options='{"widget": "date"}'/>
+                    </div>
+                    <div t-if="doc.booking_id.user_id.name" class="col-auto col-3 mw-100 mb-2">
+                        <strong>Manager:</strong>
+                        <p class="m-0" t-field="doc.booking_id.user_id"/>
+                    </div>
+                </div>
+
+                <table class="table mt64 mb64 table-sm o_main_table">
+
+                    <thead style="display: table-row-group">
+                        <tr>
+                            <th name="th_description" class="text-left">Reference No</th>
+                            <th name="th_quantity" class="text-right">Product</th>
+                            <th name="th_priceunit" class="text-right">Order Date</th>
+                            <th name="th_subtotal" class="text-right">
+                                <span>Total Price</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="booking_tbody">
+
+                        <t t-set="current_subtotal" t-value="0"/>
+
+                        <t t-foreach="doc.lines" t-as="line">
+                            <t t-set="price" t-value="doc.pricelist_id.currency_id._convert(line.price_subtotal_incl, doc.booking_id.pricelist_id.currency_id, line.env.company, datetime.datetime.now())"/>
+                            <t t-set="current_subtotal" t-value="current_subtotal + price"/>
+
+                            <tr class='bg-200 font-weight-bold o_line_section'>
+                                <td name="td_name">
+                                </td>
+                                <td name="td_quantity" class="text-right">
+                                    <span t-field="line.full_product_name"/>
+                                </td>
+                                <td name="td_priceunit" class="text-right">
+                                    <span t-field="doc.date_order"/>
+                                </td>
+                                <td name="amount_total" class="text-right">
+                                    <span>
+                                        <t t-esc="price"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr class="is-subtotal mt64 mb64 text-end">
+                            <td name="td_section_subtotal" colspan="99">
+                                <strong class="mr16">Subtotal</strong>
+                                <span t-esc="current_subtotal" t-options='{"widget": "monetary", "display_currency": doc.booking_id.pricelist_id.currency_id}'
+                                    />
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</t>
+</template>
+<template id="inherit_report_booking_pos_document" inherit_id="hotel_management_system.report_booking" name="Hotel booking Report pos inherit">
+                                    <xpath expr="/t" position="inside">
+                                        <t t-foreach="docs.pos_order_ids" t-as="doc">
+                                            <t t-call="wk_hotel_pos_extension.pos_report_template" t-lang="doc.partner_id.lang"/>
+
+                                        </t>
+                                    </xpath>
+                                </template>
+
+                            </odoo>

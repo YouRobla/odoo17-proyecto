@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <template id="s_hotel_homepage_room_snippet" name="Room snippet">
+        <section class="mb32 roomMainSection" data-scroll-background-ratio="1">
+            <div class="container-fluid">
+                <div class="jumbotron ms32 me32 mt32" data-name="Box">
+                    <div class="text-md-center row">
+                        <div class="col-12">
+                            <h1 class="ourRoomsbodyhead">
+                                Our Rooms
+                            </h1>
+                        </div>
+                        <div class="col">
+                            <p class="ourRoomsbodyTitle home_room_image">Lorem Ipsum is simply dummy
+                                text of the printing and typesetting industry. Lorem Ipsum is simply
+                                dummy text of the printing and typesetting industry. Lorem Ipsum is
+                                simply dummy text of the printing and typesetting industry. Lorem
+                                Ipsum is simply dummy text of the printing and typesetting industry. </p>
+                        </div>
+                    </div>
+                    <div class="selectiveRoomforhomePage w-100 mx-auto">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>

@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate='1'>
+    <!-- Guest Info-->
+        <record id="member1_guest_info" model="guest.info">
+            <field name="name">Alex</field>
+            <field name="gender">male</field>
+            <field name="age">22</field>
+        </record>
+
+        <record id="member2_guest_info" model="guest.info">
+            <field name="name">Maria</field>
+            <field name="gender">female</field>
+            <field name="age">21</field>
+        </record>
+
+        <record id="member3_guest_info" model="guest.info">
+            <field name="name">Tina</field>
+            <field name="gender">female</field>
+            <field name="age">19</field>
+        </record>
+
+        <record id="member4_guest_info" model="guest.info">
+            <field name="name">Sonia</field>
+            <field name="gender">female</field>
+            <field name="age">21</field>
+        </record>
+
+
+        <!--Room
+        Attribute-->
+        <record id="product_attribute_6" model="product.attribute">
+            <field name="name">Floors</field>
+            <field name="sequence">16</field>
+        </record>
+
+        <record id="product_attribute_7" model="product.attribute">
+            <field name="name">Room No</field>
+            <field name="sequence">17</field>
+        </record>
+
+        <!-- Room Attribute Value -->
+        <record id="product_attribute_value_1" model="product.attribute.value">
+            <field name="name">I</field>
+            <field name="attribute_id" ref="product_attribute_6" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_2" model="product.attribute.value">
+            <field name="name">II</field>
+            <field name="attribute_id" ref="product_attribute_6" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_3" model="product.attribute.value">
+            <field name="name">III</field>
+            <field name="attribute_id" ref="product_attribute_6" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_4" model="product.attribute.value">
+            <field name="name">IV</field>
+            <field name="attribute_id" ref="product_attribute_6" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_5" model="product.attribute.value">
+            <field name="name">V</field>
+            <field name="attribute_id" ref="product_attribute_6" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_1" model="product.attribute.value">
+            <field name="name">101</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_2" model="product.attribute.value">
+            <field name="name">102</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">2</field>
+        </record>
+
+
+        <record id="product_attribute_value_room_no_3" model="product.attribute.value">
+            <field name="name">201</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_4" model="product.attribute.value">
+            <field name="name">202</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">2</field>
+        </record>
+
+
+        <record id="product_attribute_value_room_no_5" model="product.attribute.value">
+            <field name="name">301</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_6" model="product.attribute.value">
+            <field name="name">302</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">2</field>
+        </record>
+
+
+        <record id="product_attribute_value_room_no_7" model="product.attribute.value">
+            <field name="name">401</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_8" model="product.attribute.value">
+            <field name="name">402</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_9" model="product.attribute.value">
+            <field name="name">501</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="product_attribute_value_room_no_10" model="product.attribute.value">
+            <field name="name">502</field>
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="sequence">2</field>
+        </record>
+
+        <!--Room
+        Service-->
+        <record id="hotel_service_1" model="hotel.service">
+            <field name="name">Car rental services</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Car-rental-services.png" />
+        </record>
+        <record id="hotel_service_2" model="hotel.service">
+            <field name="name">Laundry and valet service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Laundry-and-valet-service.png" />
+        </record>
+        <record id="hotel_service_3" model="hotel.service">
+            <field name="name">Doctor on call</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Doctor-on-call.png" />
+        </record>
+        <record id="hotel_service_4" model="hotel.service">
+            <field name="name">Flower arrangement</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Flower-arrangement.png" />
+        </record>
+        <record id="hotel_service_5" model="hotel.service">
+            <field name="name">Shoeshine service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Shoeshine-service.png" />
+        </record>
+        <record id="hotel_service_6" model="hotel.service">
+            <field name="name">24 Hour Room Service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Room-service-(24-hour).png" />
+        </record>
+        <record id="hotel_service_7" model="hotel.service">
+            <field name="name">Turndown Service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Turndown-service.png" />
+        </record>
+        <record id="hotel_service_8" model="hotel.service">
+            <field name="name">Ironing Service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Ironing-service.png" />
+        </record>
+        <record id="hotel_service_9" model="hotel.service">
+            <field name="name">Courier Service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Courier-services.png" />
+        </record>
+        <record id="hotel_service_10" model="hotel.service">
+            <field name="name">Dry Cleaning</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Dry-cleaning.png" />
+        </record>
+        <record id="hotel_service_11" model="hotel.service">
+            <field name="name">Luggage Storage</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Luggage-storage.png" />
+        </record>
+        <record id="hotel_service_12" model="hotel.service">
+            <field name="name">Mail Service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Mail-services.png" />
+        </record>
+        <record id="hotel_service_13" model="hotel.service">
+            <field name="name">Ticket Service</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Ticket-service.png" />
+        </record>
+
+        <!--Room
+        Facility-->
+        <record id="hotel_facility_1" model="hotel.facility">
+            <field name="name">Computer facility</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Computer-facility.png" />
+        </record>
+        <record id="hotel_facility_2" model="hotel.facility">
+            <field name="name">Conference and meeting facilities</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Conference-and-meeting-facilities.png" />
+        </record>
+        <record id="hotel_facility_3" model="hotel.facility">
+            <field name="name">Fitness room</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Fitness-room.png" />
+        </record>
+        <record id="hotel_facility_4" model="hotel.facility">
+            <field name="name">Non-smoking rooms</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Non-smoking-rooms.png" />
+        </record>
+        <record id="hotel_facility_5" model="hotel.facility">
+            <field name="name">Pet friendly</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Pet-friendly.png" />
+        </record>
+        <record id="hotel_facility_6" model="hotel.facility">
+            <field name="name">Disabled Room</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Disabled-room.png" />
+        </record>
+        <record id="hotel_facility_7" model="hotel.facility">
+            <field name="name">Excursions and guided tours</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Excursions-and-guided-tours.png" />
+        </record>
+        <record id="hotel_facility_8" model="hotel.facility">
+            <field name="name">Parking Outside</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Parking-outside.png" />
+        </record>
+        <record id="hotel_facility_9" model="hotel.facility">
+            <field name="name">Sauna</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Sauna.png" />
+        </record>
+        <record id="hotel_facility_10" model="hotel.facility">
+            <field name="name">Valet-parking</field>
+            <field name="logo" type="base64"
+                file="hotel_management_system/static/img/service-facility/Valet-parking.png" />
+        </record>
+
+        <record id="hotel_type_resort_demo" model="hotel.type">
+            <field name="hotel_type">Resort</field>
+        </record>
+
+        <record id="hotel_type_beach_demo" model="hotel.type">
+            <field name="hotel_type">Beach</field>
+        </record>
+
+        <!-- Hotel Records -->
+        <record id="hotel_hilton_demo" model="hotel.hotels">
+            <field name="name">Hilton Grand</field>
+            <field name="partner_id" ref="base.partner_admin"/>
+            <field name="hotel_type_id" ref="hotel_management_system.hotel_type_resort_demo"/>
+            <field name="description">Luxurious city hotel with premium services and modern amenities.</field>
+            <field name="policies">No smoking, Pets not allowed, Free cancellation within 24 hours.</field>
+            <field name="is_published">True</field>
+            <field name="tagline">L'hotel</field>
+        </record>
+
+        <!-- Hotel 2 -->
+        <record id="hotel_marriott_demo" model="hotel.hotels">
+            <field name="name">Marriott Seaside</field>
+            <field name="partner_id" ref="base.partner_admin" />
+            <field name="hotel_type_id" ref="hotel_management_system.hotel_type_beach_demo"/>
+            <field name="description">Seaside paradise perfect for vacations with beachfront access.</field>
+            <field name="policies">Check-in after 2PM, No outside food allowed, ID required at check-in.</field>
+            <field name="is_published">True</field>
+            <field name="tagline">L'hotel</field>
+        </record>
+
+        <!--Room
+        type product-->
+        <record id="product_product_1_room" model="product.template">
+            <field name="name">King Room</field>
+            <field name="max_adult">2</field>
+            <field name="max_child">1</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">4999</field>
+            <field name="list_price">8555</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A room with a king-sized bed. May be occupied
+                by one or more people. The room size or area of King Rooms are generally between 32
+                m² to 50 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image1.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo"/>
+        </record>
+
+        <record id="product_product_2_room" model="product.product">
+            <field name="name">Queen Room</field>
+            <field name="max_adult">1</field>
+            <field name="max_child">2</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">4699.0</field>
+            <field name="list_price">7699.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A room with a queen-sized bed. May be occupied
+                by one or more people. The room size or area of Queen Rooms are generally between 32
+                m² to 50 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image2.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo"/>
+        </record>
+
+        <record id="product_product_3_room" model="product.product">
+            <field name="name">Single Room</field>
+            <field name="max_adult">1</field>
+            <field name="max_child">2</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">2699.0</field>
+            <field name="list_price">4699.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description"> A room assigned to one person. May have one
+                or more beds. The room size or area of Single Rooms are generally between 37 m² to
+                45 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image3.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo"/>
+        </record>
+
+        <record id="product_product_4_room" model="product.product">
+            <field name="name">Double Room</field>
+            <field name="max_adult">4</field>
+            <field name="max_child">3</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">3699.0</field>
+            <field name="list_price">5699.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A room assigned to two people. May have one or
+                more beds. The room size or area of Double Rooms are generally between 40 m² to 45
+                m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image4.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo"/>
+        </record>
+
+        <record id="product_product_5_room" model="product.product">
+            <field name="name">Triple Room</field>
+            <field name="max_adult">5</field>
+            <field name="max_child">2</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">5000.0</field>
+            <field name="list_price">7500.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A room that can accommodate three persons and
+                has been fitted with three twin beds, one double bed and one twin bed or two double
+                beds. The room size or area of Triple Rooms are generally between 45 m² to 65 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image5.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo"/>
+        </record>
+
+        <record id="product_product_6_room" model="product.product">
+            <field name="name">Quadruple Room</field>
+            <field name="max_adult">3</field>
+            <field name="max_child">5</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">6500.0</field>
+            <field name="list_price">8200.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4')])]" />
+            <field name="product_website_description">A room assigned to four people. May have two
+                or more beds. The room size or area of Quad Rooms are generally between 70 m² to 85
+                m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image6.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo"/>
+        </record>
+
+        <record id="product_product_7_room" model="product.product">
+            <field name="name">Twin Room</field>
+            <field name="max_adult">3</field>
+            <field name="max_child">5</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">2500.0</field>
+            <field name="list_price">4999.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A room with two twin beds. May be occupied by
+                one or more people. The room size or area of Twin Rooms are generally between 32 m²
+                to 40 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image7.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_marriott_demo"/>
+        </record>
+
+        <record id="product_product_8_room" model="product.product">
+            <field name="name">Double-double Room</field>
+            <field name="max_adult">6</field>
+            <field name="max_child">2</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">6700.0</field>
+            <field name="list_price">8455.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A Room with two double ( or perhaps queen)
+                beds. And can accommodate two to four persons with two twin, double or queen-size
+                beds. The room size or area of Double-double / Double Twin rooms are generally
+                between 50 m² to 70 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image8.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_marriott_demo"/>
+        </record>
+
+        <record id="product_product_9_room" model="product.product">
+            <field name="name">Studio Room</field>
+            <field name="max_adult">5</field>
+            <field name="max_child">3</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">9999.0</field>
+            <field name="list_price">12455.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A room with a studio bed- a couch which can be
+                converted into a bed. May also have an additional bed. The room size or area of
+                Studio room types are generally between 25 m² to 40 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image9.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_marriott_demo"/>
+        </record>
+
+        <record id="product_product_10_room" model="product.product">
+            <field name="name">Cabana Room</field>
+            <field name="max_adult">3</field>
+            <field name="max_child">2</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">28000.0</field>
+            <field name="list_price">32999.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">This type of room is always adjoining to the
+                swimming pool or have a private pool attached to the room. The room size or area of
+                Cabana Room Types are generally between 30 m² to 45 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image10.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_marriott_demo"/>
+        </record>
+
+        <record id="product_product_11_room" model="product.product">
+            <field name="name">Standard Room</field>
+            <field name="max_adult">2</field>
+            <field name="max_child">3</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">1299.0</field>
+            <field name="list_price">2599.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids" eval="[(6, 0, [ref('hotel_service_1')])]" />
+            <field name="facility_ids" eval="[(6, 0, [ref('hotel_facility_1')])]" />
+            <field name="product_website_description">A standard room is likely the same as a queen
+                or a single room, great for a solo traveler or a couple. Expect a double bed. </field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image11.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_marriott_demo"/>
+        </record>
+
+        <record id="product_product_12_room" model="product.product">
+            <field name="name">Executive Room</field>
+            <field name="max_adult">6</field>
+            <field name="max_child">4</field>
+            <field name="is_published">True</field>
+            <field name="is_room_type" eval="True" />
+            <field name="categ_id" ref="product.product_category_all" />
+            <field name="standard_price">28999.0</field>
+            <field name="list_price">35899.0</field>
+            <field name="type">consu</field>
+            <field name="service_ids"
+                eval="[(6, 0, [ref('hotel_service_1'), ref('hotel_service_2'), ref('hotel_service_3'), ref('hotel_service_4'), ref('hotel_service_5')])]" />
+            <field name="facility_ids"
+                eval="[(6, 0, [ref('hotel_facility_1'), ref('hotel_facility_2'), ref('hotel_facility_3'), ref('hotel_facility_4'), ref('hotel_facility_5')])]" />
+            <field name="product_website_description">A parlour or living room connected with to one
+                or more bedrooms. (A room with one or more bedrooms and a separate living space.)
+                The room size or area of Suite rooms are generally between 70 m² to 100 m².</field>
+            <field name="image_1920" type="base64"
+                file="hotel_management_system/static/img/rooms/image12.png" />
+            <field name="hotel_id" ref="hotel_management_system.hotel_marriott_demo"/>
+        </record>
+
+        <!-- the product template attribute lines have to be defined before creating the variants -->
+        <record id="product_product_1_room_product_template_attribute_line_1"
+            model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_product_1_room" />
+            <field name="attribute_id" ref="product_attribute_6" />
+            <field name="value_ids" eval="[(6, 0, [ref('product_attribute_value_1')])]" />
+        </record>
+
+        <record id="product_product_1_room_product_template_attribute_line_2"
+            model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_product_1_room" />
+            <field name="attribute_id" ref="product_attribute_7" />
+            <field name="value_ids"
+                eval="[(6, 0, [ref('product_attribute_value_room_no_1'), ref('product_attribute_value_room_no_2')])]" />
+        </record>
+
+        <!-- Booking Record -->
+        <record id="hotel_booking_5" model="hotel.booking">
+            <field name="partner_id" ref="base.partner_admin" />
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=3))" />
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=9))" />
+            <field name="status_bar">initial</field>
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo" />
+        </record>
+
+        <record id="hotel_booking_6" model="hotel.booking">
+            <field name="partner_id" ref="base.partner_admin" />
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=2))" />
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=9))" />
+            <field name="status_bar">initial</field>
+            <field name="hotel_id" ref="hotel_management_system.hotel_hilton_demo" />
+        </record>
+
+        <!-- Booking line Record -->
+
+        <record id="hotel_booking_line_5" model="hotel.booking.line">
+            <field name="booking_id" ref="hotel_booking_5" />
+            <field name="product_id" ref="product_product_5_room" />
+            <field name="guest_info_ids"
+                eval="[(4, ref('hotel_management_system.member1_guest_info'))]" />
+        </record>
+
+        <record id="hotel_booking_line_6" model="hotel.booking.line">
+            <field name="booking_id" ref="hotel_booking_6" />
+            <field name="product_id" ref="product_product_4_room" />
+            <field name="guest_info_ids"
+                eval="[(4, ref('hotel_management_system.member2_guest_info'))]" />
+        </record>
+
+        <record id="hotel_booking_line_7" model="hotel.booking.line">
+            <field name="booking_id" ref="hotel_booking_5" />
+            <field name="product_id" ref="product_product_3_room" />
+            <field name="guest_info_ids"
+                eval="[(4, ref('hotel_management_system.member3_guest_info'))]" />
+        </record>
+
+        <record id="hotel_booking_line_9" model="hotel.booking.line">
+            <field name="booking_id" ref="hotel_booking_6" />
+            <field name="product_id" ref="product_product_2_room" />
+            <field name="guest_info_ids"
+                eval="[(4, ref('hotel_management_system.member4_guest_info'))]" />
+        </record>
+
+    </data>
+</odoo>

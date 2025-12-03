@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="view_hotel_service_checkout_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.service.checkout.wizard.form</field>
+        <field name="model">hotel.service.checkout.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Checkout Pending Services">
+                <sheet>
+                    <field name="service_ids" nolabel="1" readonly="1">
+                        <tree string="Alloted Services" create="0">
+                            <field name='sequence_id' />
+                            <field name='assign_to' widget="many2one_avatar_user" optional="show" />
+                            <field name='service_id' />
+                            <field name='amount' invisible='not amount' />
+                        </tree>
+                    </field>
+                    <group>
+                    </group>
+                    <footer>
+                        <field name="checkout" invisible="1"/>
+                        <button name="mark_all_done" type="object" string="Mark All as Done" class="oe_highlight" invisible="checkout == True"/>
+                        <button name="action_checkout" type="object" string="Checkout" class="oe_highlight" invisible="checkout == False"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_service_checkout_wizard" model="ir.actions.act_window">
+        <field name="name">Hotel Service Checkout</field>
+        <field name="res_model">hotel.service.checkout.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_hotel_service_checkout_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="view_exchange_rooms" model="ir.ui.view">
+        <field name="name">Exchange ROOM</field>
+        <field name="model">exchange.room</field>
+        <field name="arch" type="xml">
+            <form string="Exchange Rooms">
+                <group>
+                    <group>
+                        <field name='available_room_ids' invisible="1"/>
+                        <field string="Current Room" name='booking_line_id' nolable="1" readonly="1" />
+                        <field string="Exchange with" name='exchange_room' domain="[('id','in',available_room_ids)]" />
+                    </group>
+                    <group>
+                        <field name="price" />
+                        <field name='exchange_price' readonly="1" invisible = "not exchange_room" />
+
+                        <field name="price_difference" decoration-danger="price_difference &lt; 0"
+                            decoration-success="price_difference > 0" invisible = "not exchange_room"/>
+                    </group>
+                </group>
+                <group nolable="1" invisible="warning == ''">
+                    <field name="warning" nolabel="1" style="color:red;" readonly="1" invisible="warning == ''"/>
+                </group>
+
+                <footer>
+                    <button invisible="warning != ''" name="action_exchange_room" class="btn btn-success" string="Confirm"
+                        type="object" />
+                    <button string="Close" class="btn btn-danger" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_exchange_rooms" model="ir.actions.act_window">
+        <field name="name">Exchange Room</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">exchange.room</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

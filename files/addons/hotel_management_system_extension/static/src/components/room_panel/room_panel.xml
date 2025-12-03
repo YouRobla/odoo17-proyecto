@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="room_panel" owl="1">
+        <div class="o_room_panel_modern">
+            
+            <!-- Modern Header with Gradient -->
+            <div class="o_modern_header">
+                <div class="o_header_background"></div>
+                <div class="o_header_content_wrapper">
+                    <div class="o_title_section">
+                        <div class="o_title_icon">
+                            <i class="fa fa-building"/>
+                        </div>
+                        <div class="o_title_text">
+                            <h1 class="o_main_title" t-esc="this._t('Panel de Habitaciones')"/>
+                            <p class="o_subtitle" t-esc="this._t('Gestión integral de habitaciones hoteleras')"/>
+                        </div>
+                    </div>
+                    
+                    <div class="o_header_actions">
+                        <button class="o_refresh_btn" t-on-click="() => this.refreshData()">
+                            <i class="fa fa-refresh"/>
+                            <span t-esc="this._t('Actualizar')"/>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="o_stats_container">
+                    <!-- Disponibles -->
+                    <div class="o_stat_card">
+                        <div class="o_stat_icon" style="background: #4CAF50;">
+                            <i class="fa fa-check"/>
+                        </div>
+                        <div class="o_stat_content">
+                            <div class="o_stat_number" t-esc="this.state.stats.room_ready"/>
+                            <div class="o_stat_label" t-esc="this._t('Disponibles')"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Ocupadas -->
+                    <div class="o_stat_card">
+                        <div class="o_stat_icon" style="background: #FF6B35;">
+                            <i class="fa fa-user"/>
+                        </div>
+                        <div class="o_stat_content">
+                            <div class="o_stat_number" t-esc="this.state.stats.checkin"/>
+                            <div class="o_stat_label" t-esc="this._t('Ocupadas')"/>
+                        </div>
+                    </div>
+                    
+                    <!-- En Limpieza -->
+                    <div class="o_stat_card">
+                        <div class="o_stat_icon" style="background: #FF9800;">
+                            <i class="fa fa-wrench"/>
+                        </div>
+                        <div class="o_stat_content">
+                            <div class="o_stat_number" t-esc="this.state.stats.cleaning_needed"/>
+                            <div class="o_stat_label" t-esc="this._t('En Limpieza')"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Ingresos Actuales -->
+                    <div class="o_stat_card o_revenue_card">
+                        <div class="o_stat_icon" style="background: linear-gradient(135deg, #10B981, #059669);">
+                            <i class="fa fa-money"/>
+                        </div>
+                        <div class="o_stat_content">
+                            <div class="o_stat_number" t-esc="this.formatPrice(this.state.stats.revenue)"/>
+                            <div class="o_stat_label" t-esc="this._t('Ingresos Activos')"/>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+
+            <!-- States Legend Section -->
+            <div class="o_states_legend_section">
+                <div class="o_states_wrapper">
+
+                    <!-- Estados Legend - Botones Coloridos -->
+                    <div class="o_states_legend">
+                        <div class="o_legend_header">
+                            <i class="fa fa-palette"/>
+                            <span t-esc="this._t('Estados de Habitaciones')"/>
+                        </div>
+                        <div class="o_states_buttons">
+                            <!-- Botón "Todos" -->
+                            <button class="o_state_btn o_state_all" 
+                                    t-att-class="{'o_active': this.state.filters.status === ''}"
+                                    t-on-click="() => this.setStatusFilter('')">
+                                <span class="o_state_color" style="background: linear-gradient(45deg, #667eea, #764ba2);"/>
+                                <span class="o_state_label" t-esc="this._t('Todos')"/>
+                            </button>
+                            
+                            <!-- Botones de Estados Dinámicos -->
+                            <t t-foreach="this.state.filterData.available_states" t-as="state" t-key="state.key">
+                                <button class="o_state_btn" 
+                                        t-att-class="{'o_active': this.state.filters.status === state.key}"
+                                        t-on-click="() => this.setStatusFilter(state.key)">
+                                    <span class="o_state_color" t-att-style="'background: ' + state.color + ';'"/>
+                                    <span class="o_state_label" t-esc="state.label"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Clear Button -->
+                    <button class="o_clear_all_btn" t-on-click="() => this.clearFilters()">
+                        <i class="fa fa-refresh"/>
+                        <span t-esc="this._t('Limpiar')"/>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="o_content_area">
+                
+                <!-- Error State -->
+                <div t-if="this.state.error" class="o_error_state">
+                    <div class="o_error_card">
+                        <div class="o_error_icon">
+                            <i class="fa fa-exclamation-triangle"/>
+                        </div>
+                        <div class="o_error_content">
+                            <h4 t-esc="this._t('Error al cargar datos')"/>
+                            <p t-esc="this.state.error"/>
+                            <button class="o_retry_btn" t-on-click="() => this.refreshData()">
+                                <i class="fa fa-refresh me-2"/>
+                                <span t-esc="this._t('Reintentar')"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div t-if="this.state.isLoading" class="o_loading_state">
+                    <div class="o_loading_spinner">
+                        <div class="o_spinner"></div>
+                    </div>
+                    <h4 t-esc="this._t('Cargando habitaciones...')"/>
+                    <p t-esc="this._t('Por favor espera mientras obtenemos la información más reciente')"/>
+                </div>
+                
+                <!-- Rooms Grid -->
+                <div t-if="!this.state.isLoading and !this.state.error" class="o_rooms_grid">
+                    
+                    <!-- Room Cards -->
+                    <t t-foreach="this.filteredRooms" t-as="room" t-key="room.id">
+                        <div class="o_room_card_modern" 
+                             t-att-class="'o_status_' + (room.status || 'room_ready')"
+                             t-att-data-room-id="room.id"
+                             t-on-click="() => this.openReservationModal(room)">
+                            
+                            <!-- Status Indicator -->
+                            <div class="o_status_indicator"/>
+                            
+                            <!-- Card Header -->
+                            <div class="o_card_header">
+                                <div class="o_room_number">
+                                    <span t-esc="room.name || room.code || 'Sin nombre'"/>
+                                </div>
+                                <div class="o_status_badge" t-esc="this.getStatusLabel(room.status || 'available')"/>
+                            </div>
+
+                            <!-- Imagen expandible de la habitación -->
+                            <div class="o_room_image_section">
+                                <!-- Botón de expansión -->
+                                <div class="o_image_toggle_btn" 
+                                    t-on-click.stop="(ev) => this.toggleImageExpansion(room.id)"
+                                    t-att-data-room-id="room.id">
+                                    <i t-att-class="'fa ' + (this.isImageExpanded(room.id) ? 'fa-chevron-up' : 'fa-chevron-down')"/>
+                                    <span t-esc="this._t('Imagen')"/>
+                                </div>
+                                
+                                <!-- Imagen expandible -->
+                                <div t-att-class="'o_room_image_container ' + (this.isImageExpanded(room.id) ? 'o_expanded' : 'o_collapsed')" 
+                                    t-att-data-room-id="room.id"
+                                    t-on-click.stop="(ev) => this.toggleImageExpansion(room.id)">
+                                    
+                                    <!-- Imagen real si existe -->
+                                    <img t-if="room.image_1920" 
+                                        t-attf-src="/web/image?model=product.template&amp;id={{room.id}}&amp;field=image_1920" 
+                                        class="o_room_image" 
+                                        t-att-alt="'Imagen de ' + room.name"/>
+                                    
+                                    <!-- Placeholder si no hay imagen -->
+                                    <div t-if="!room.image_1920" class="o_room_image_placeholder">
+                                        <i class="fa fa-bed fa-3x"/>
+                                        <p t-esc="this._t('Sin imagen disponible')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="o_card_body">
+                                <div class="o_room_info_grid">
+                                    <div class="o_info_item">
+                                        <i class="fa fa-users"/>
+                                        <span t-esc="((room.max_adult || 0) + (room.max_child || 0)) + ' huéspedes'"/>
+                                    </div>
+                                    
+                                    <div class="o_info_item">
+                                        <span t-esc="this.formatPrice(room.list_price || 0)"/>
+                                    </div>
+                                    
+                                    <!-- Etiquetas de la habitación (incluye categoría si no hay etiquetas específicas) -->
+                                    <div t-if="(room.product_tag_ids and room.product_tag_ids.length > 0) or room.categ_id" class="o_info_item">
+                                        <i class="fa fa-tags"/>
+                                        <span class="o_tags_text">
+                                            <t t-if="room.product_tag_ids and room.product_tag_ids.length > 0">
+                                                <t t-esc="room.product_tag_ids.map(tag => tag[1]).join(', ')"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-esc="room.categ_id[1] || 'N/A'"/>
+                                            </t>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Current Reservation Info - Solo mostrar si hay reserva activa válida Y NO está en room_ready -->
+                                <div t-if="room.current_reservation and room.current_reservation.guest_name and room.status !== 'available' and room.status !== 'room_ready'" class="o_current_booking">
+                                    <div class="o_booking_header">
+                                        <i class="fa fa-user-circle"/>
+                                        <span class="o_guest_name" t-esc="room.current_reservation.guest_name"/>
+                                    </div>
+                                    <div t-if="room.current_reservation.hotel_name" class="o_booking_hotel">
+                                        <i class="fa fa-building"/>
+                                        <span t-esc="room.current_reservation.hotel_name"/>
+                                    </div>
+                                    <div class="o_booking_status">
+                                        <span class="o_status_emoji" t-esc="room.current_reservation.status_emoji"/>
+                                        <span class="o_status_label" t-esc="room.current_reservation.status_label"/>
+                                    </div>
+                                    <div class="o_booking_dates">
+                                        <div class="o_date_info">
+                                            <i class="fa fa-sign-in"/>
+                                            <span t-esc="this.formatDateTime(room.current_reservation.checkin_date)"/>
+                                        </div>
+                                        <div class="o_date_info">
+                                            <i class="fa fa-sign-out"/>
+                                            <span t-esc="this.formatDateTime(room.current_reservation.checkout_date)"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Next Reservation Info - Solo mostrar si no hay reserva activa y hay próxima válida Y NO está en room_ready -->
+                                <div t-if="!room.current_reservation and room.next_reservation and room.next_reservation.guest_name and room.status === 'available' and room.next_reservation.checkin_date" class="o_next_booking">
+                                    <div class="o_next_header">
+                                        <i class="fa fa-clock-o"/>
+                                        <span class="o_next_label" t-esc="this._t('Próxima reserva')"/>
+                                    </div>
+                                    <div class="o_next_guest" t-esc="room.next_reservation.guest_name"/>
+                                    <div t-if="room.next_reservation.hotel_name" class="o_next_hotel">
+                                        <i class="fa fa-building"/>
+                                        <span t-esc="room.next_reservation.hotel_name"/>
+                                    </div>
+                                    <div class="o_next_status">
+                                        <span class="o_status_emoji" t-esc="room.next_reservation.status_emoji"/>
+                                        <span class="o_status_label" t-esc="room.next_reservation.status_label"/>
+                                    </div>
+                                    <div class="o_next_date" t-esc="this.formatDateTime(room.next_reservation.checkin_date)"/>
+                                </div>
+                                
+                                <!-- Mensaje para habitaciones disponibles - LÓGICA MEJORADA -->
+                                <div t-if="room.status === 'room_ready'" class="o_room_available_info">
+                                    <div class="o_available_header">
+                                        <i class="fa fa-check-circle"/>
+                                        <span class="o_available_label" t-esc="this._t('Habitación Disponible')"/>
+                                    </div>
+                                    <div class="o_available_message" t-esc="this._t('Lista para nuevas reservas')"/>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Actions -->
+                            <div class="o_card_actions">
+                                <!-- Botón principal: Dinámico según estado de la habitación -->
+                                <button t-att-class="'o_action_btn ' + ((room.status === 'available' or room.status === 'room_ready') ? 'o_primary' : 'o_info')" 
+                                        t-on-click.stop="() => this.openReservationModal(room)"
+                                        t-att-title="(room.status === 'available' or room.status === 'room_ready') ? 'Crear nueva reserva para esta habitación' : 'Ver detalles y crear reserva para esta habitación'">
+                                    <i class="fa fa-plus"/>
+                                    <span t-esc="(room.status === 'available' or room.status === 'room_ready') ? this._t(' Reserva') : this._t(' Detalles')"/>
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                    
+                    <!-- Empty State -->
+                    <div t-if="!this.filteredRooms.length" class="o_empty_state">
+                        <div class="o_empty_icon">
+                            <i class="fa fa-bed"/>
+                        </div>
+                        <h3 t-esc="this._t('No se encontraron habitaciones')"/>
+                        <p t-esc="this._t('Ajusta los filtros para ver más resultados o verifica la conexión')"/>
+                        <button class="o_retry_btn" t-on-click="() => this.refreshData()">
+                            <i class="fa fa-refresh me-2"/>
+                            <span t-esc="this._t('Actualizar')"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

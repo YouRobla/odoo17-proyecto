@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Payment Confirmation Mail Template -->
+        <record id="payment_confirmation_template" model="mail.template">
+            <field name="name">Payment Confirmation</field>
+            <field name="email_from">{{object.company_id.email_formatted or user.email_formatted}}</field>
+            <field name="subject">Payment Confirmation - {{object.name}}</field>
+            <field name="email_to">{{object.partner_id.email or ''}}</field>
+            <field name="model_id" ref="account.model_account_payment" />
+            <field name="auto_delete" eval="True" />
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: 'Lucida Grande', Ubuntu, Arial, Verdana, sans-serif; color: rgb(34, 34, 34); background-color: #FFF;">
+                    <h1>Payment Confirmation</h1>
+                    <p>Dear <t t-out="object.partner_id.name or 'Customer'">Customer</t>,</p>
+                    
+                    <p>We are pleased to confirm that we have received your payment.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <strong>Payment Details:</strong><br/>
+                        Payment Reference: <t t-out="object.name or ''">PAY/001</t><br/>
+                        Amount: <t t-out="object.amount or ''">$0.00</t> <t t-out="object.currency_id.name or ''">USD</t><br/>
+                        Date: <t t-out="object.date or ''">2024-01-01</t><br/>
+                        Payment Method: <t t-out="object.journal_id.name or ''">Bank</t><br/>
+                    </div>
+                    
+                    <p>Thank you for your payment. If you have any questions, please don't hesitate to contact us.</p>
+                    
+                    <p>Best regards,<br/>
+                    <t t-out="object.company_id.name or ''">Your Company</t></p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Create External ID alias for parent module compatibility -->
+        <record id="hotel_management_system_payment_confirmation_template" model="ir.model.data">
+            <field name="name">payment_confirmation_template</field>
+            <field name="module">hotel_management_system</field>
+            <field name="model">mail.template</field>
+            <field name="res_id" ref="payment_confirmation_template"/>
+        </record>
+    </data>
+</odoo>

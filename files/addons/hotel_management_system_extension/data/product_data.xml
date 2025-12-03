@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="product_service_early_checkin" model="product.product">
+            <field name="name">Early Check-in Fee</field>
+            <field name="type">service</field>
+            <field name="invoice_policy">order</field>
+            <field name="list_price">20.0</field>
+        </record>
+
+        <record id="product_service_late_checkout" model="product.product">
+            <field name="name">Late Check-out Fee</field>
+            <field name="type">service</field>
+            <field name="invoice_policy">order</field>
+            <field name="list_price">35.0</field>
+        </record>
+
+    </data>
+</odoo>

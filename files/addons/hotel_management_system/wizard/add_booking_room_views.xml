@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="view_add_rooms" model="ir.ui.view">
+        <field name="name">Add ROOM</field>
+        <field name="model">booking.room</field>
+        <field name="arch" type="xml">
+            <form string="Add Rooms">
+                <group>
+                    <field name="booked_booking_ids" invisible="1"/>
+                    <field name='available_room_ids' widget="many2many_tags" required="True" readonly='False' domain="[('id', 'not in', booked_booking_ids),('product_tmpl_id.is_room_type','=',True)]"/>
+                </group>
+
+                <footer>
+                    <button name="add_room_in_booking" class="btn btn-success btn-sm" string="Confirm" type="object"/>
+                    <button string="Close" class="btn btn-danger btn-sm" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_add_rooms" model="ir.actions.act_window">
+        <field name="name">Add Rooms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">booking.room</field>
+        <field name="view_mode">form</field>
+        <field name="domain">[('id','in',[30])]</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+
+    <!-- House Keeping List View -->
+    <record model="ir.ui.view" id="hotel_housekeeping_list_view">
+        <field name="name">hotel.housekeeping.list</field>
+        <field name="model">hotel.housekeeping</field>
+        <field name="priority" eval="20" />
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Hotel House Keeping" create="1" default_order="sequence_id desc, id">
+                <field name='sequence_id' readonly="1" />
+                <field name='assign_to' widget="many2one_avatar_user" optional="show" />
+                <field name='state' widget="badge" decoration-info="state == 'draft'"
+                    decoration-warning="state == 'in_progress'"
+                    decoration-success="state == 'completed'" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- House Keeping Form View -->
+    <record model="ir.ui.view" id="hotel_housekeeping_form_view">
+        <field name="name">hotel.housekeeping.form</field>
+        <field name="model">hotel.housekeeping</field>
+        <field name="priority" eval="21" />
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Booking" create="1">
+                <header>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,in_process,completed" />
+                    <button name="action_in_progress" string="In Progress" type="object"
+                        class="oe_highlight"
+                        invisible="state in ('in_progress', 'completed')" />
+                    <button name="action_completed" string="Mark as Completed" type="object"
+                        class="oe_highlight"
+                        invisible="state in ('draft', 'completed')" />
+                    <button name="action_draft" string="Reset To Draft" type="object" class=""
+                        invisible="state != 'in_progress'" />
+
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name='sequence_id' readonly="1" />
+                        </h1>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" />
+                    <group>
+                        <group>
+                            <field name="room_id" />
+                            <field name="assign_to" />
+                            <field name="booking_line_id" readonly='1' invisible="not booking_line_id" />
+                        </group>
+                        <group>
+                            <field name="team_id" />
+                            <field name="responsible" />
+                            <field name="booking_id" invisible="not booking_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View For Hotel Housekeeping Model -->
+    <record id="view_hotel_keeping_filter" model="ir.ui.view">
+        <field name="name">hotel.housekeeping.list.select</field>
+        <field name="model">hotel.housekeeping</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="15" />
+        <field name="arch" type="xml">
+            <search string="Search House Keeping Records">
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]" />
+                <filter string="In Progress" name="progress" domain="[('state','=','in_progress')]" />
+                <filter string="Completed" name="completed" domain="[('state','=','completed')]" />
+                <group string="Group By">
+                    <filter string="state" name='state' context="{'group_by':'state'}" />
+                    <filter string="Assigned User" name='user' context="{'group_by':'assign_to'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for House Keeping -->
+    <record id="action_hotel_house_keeping" model="ir.actions.act_window">
+        <field name="name">House Keeping</field>
+        <field name="res_model">hotel.housekeeping</field>
+        <field name="view_ids"
+            eval="[(5,0,0),
+            (0,0,{'sequence':1,'view_mode':'tree','view_id':ref('hotel_management_system.hotel_housekeeping_list_view')}),
+            (0,0,{'sequence':2,'view_mode':'form','view_id':ref('hotel_management_system.hotel_housekeeping_form_view')}),
+            ]" />
+        <field name="search_view_id" ref="view_hotel_keeping_filter" />
+        <field name="view_mode">tree</field>
+    </record>
+
+</odoo>

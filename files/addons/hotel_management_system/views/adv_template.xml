@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2017-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <data noupdate="0">
+        <template id="checkout_layout_advance_payment" name="Advance Payment"
+            inherit_id="payment.submit_button">
+            <xpath expr="//button[@name='o_payment_submit_button']" position="before">
+                <t t-set="any_room_in_cart"
+                    t-value="any(line.product_id.is_room_type for line in request.website.sale_get_order().order_line)" />
+            </xpath>
+            <xpath expr="//button[@name='o_payment_submit_button']" position="attributes">
+                <attribute name="t-attf-class">
+                    btn btn-primary w-100 w-md-auto ms-auto px-5
+                    #{'d-none' if any_room_in_cart else ''}
+                </attribute>
+            </xpath>
+            <xpath expr="//button[@name='o_payment_submit_button']" position="before">
+                <t
+                    t-if="'/shop/payment' in request.httprequest.full_path and not request.env.user._is_public()"
+                    t-call="hotel_management_system.advance_payment_button" />
+            </xpath>
+            <!-- <xpath expr="//div[@id='o_wsale_total_accordion']//*" position="before">
+                <t t-if="'/shop/payment' in request.httprequest.full_path and not request.env.user._is_public()"
+            t-call="hotel_management_system.advance_payment_button"/>
+            </xpath> -->
+        </template>
+
+        <template id="advance_payment_button" name="Advance Payment Button">
+            <div id="website_order_advance_payment" class="d-flex flex-column align-items-center">
+                <button class="btn btn-primary w-100 sticky-lg-top mb-3" style='display: none;'
+                    id="advance_payment" data-bs-toggle="modal"
+                    data-bs-target="#advancePaymentModal">Advance Payment</button>
+                <t t-call="hotel_management_system.advance_payments_modal" />
+            </div>
+        </template>
+
+        <template id="advance_payments_modal" name="Advance Payment Modal">
+            <div class="modal fade" id="advancePaymentModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header pb-0">
+                            <h5 class="modal-title">Advance Payment</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="number" id="advance_pay_amount" name="advance_pay_amount"
+                                class="form-control mb-3" placeholder="Enter the Advance amount"
+                                t-attf-max="{{website_sale_order.balance_amount}}" />
+                            <!-- Dynamic Modal Content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="aditional_payment_modal_content" name="Advance Payment Modal Content">
+            <iframe id="payment_iframe" class="w-100" t-attf-src="{{custom_link}}">
+            </iframe>
+        </template>
+
+        <template id="total_advance_payment" name="Advance Payment Total"
+            inherit_id="website_sale.total">
+            <xpath expr="//tr[@id='order_total_taxes']" position="after">
+                <tr t-if="website_sale_order.paid_amount" id="advance_paid">
+                    <td colspan="2" class="text-muted border-0 ps-0 pt-0 pb-3">Advance Paid</td>
+                    <td class="text-end border-0 pe-0 pt-0 pb-3"> - <span
+                            t-field="website_sale_order.paid_amount"
+                            class="monetary_field"
+                            style="white-space: nowrap;"
+                            t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />
+                    </td>
+                </tr>
+            </xpath>
+            <xpath expr="//tr[@id='order_total']" position="replace">
+                <tr id="order_total" class="border-top">
+                    <td colspan="2" class="border-0 ps-0 pt-3">
+                        <strong>Total</strong>
+                    </td>
+                    <td class="text-end border-0 px-0 pt-3">
+                        <strong t-field="website_sale_order.balance_amount"
+                            class="monetary_field text-end p-0"
+                            t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+    </data>
+</odoo>

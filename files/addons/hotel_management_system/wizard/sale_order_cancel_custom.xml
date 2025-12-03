@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="sale_order_cancel_view_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.cancel.form.inherit.reason</field>
+        <field name="model">sale.order.cancel</field>
+        <field name="inherit_id" ref="sale.sale_order_cancel_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/field[@name='body']" position="after">
+                <field name="show_reason_field" invisible="1"/>
+                <field name="cancellation_reason" invisible="not show_reason_field" required="show_reason_field" placeholder="--- Reason for cancellation ---"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

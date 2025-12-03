@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+
+    <record id="hotel_rest_api_view_form" model="ir.ui.view">
+        <field name="name">hotel_rest_api_view.form</field>
+        <field name="model">hotel.rest.api</field>
+        <field name="arch" type="xml">
+            <form string="WebService Account">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+
+                        <button name="toggle_active" type="object"
+                            class="oe_stat_button text-success" invisible="not active">
+                            <i class="fa fa-toggle-on  text-success me-2" style="font-size: 16px;"></i>
+                            Active <field name="active" options='{"terminology": "archive"}'
+                                invisible="1" />
+                        </button>
+                        <button name="toggle_active" type="object"
+                            class="oe_stat_button text-danger" invisible="active">
+                            <i class="fa fa-toggle-on fa-rotate-180 text-danger me-2"
+                                style="font-size: 16px;"></i> Inactive </button>
+                    </div>
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                            <label for="name" string="Name" />
+                        </div>
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Key Identifier" />
+                        </h1>
+                    </div>
+                    <div class="row">
+                        <div class="oe_title col-6">
+                            <div>
+                                <label for="api_key" string="Api Secret Key" />
+                            </div>
+                            <div>
+                                <field name="api_key" readonly="1" />
+                                <button name="generate_secret_key" string="Generate Api Secret Key"
+                                    type="object" class="oe_link" icon="fa-arrow-right" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <field name="description" class="oe_inline mt-4"
+                        placeholder="For Internal purpose Only" />
+                    <div class="oe_clear" />
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hotel_rest_api_view_tree2" model="ir.ui.view">
+        <field name="name">hotel_rest_api_view.tree2</field>
+        <field name="model">hotel.rest.api</field>
+        <field name="arch" type="xml">
+            <tree string="WebService Accounts">
+                <field name="name" />
+                <field name="description" optional='hide' />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="hotel_rest_api_view_tree" model="ir.ui.view">
+        <field name="name">hotel_rest_api_view.tree</field>
+        <field name="model">hotel.rest.api</field>
+        <field name="arch" type="xml">
+            <tree string="WebService Accounts">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="hotel_rest_api_action" model="ir.actions.act_window">
+        <field name="name">HOTEL REST WEBSERVICE ACCOUNT</field>
+        <field name="res_model">hotel.rest.api</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="hotel_rest_api_view_tree2" />
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to add a new Rest Webservice Account.
+            </p>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.client" id="action_rest_doc_url">
+        <field name="name">Rest Doc</field>
+        <field name="tag">RestDocAction</field>
+    </record>
+
+    <menuitem name="Web-Services" id="hotel_rest_api_main_menu"
+        parent="hotel_management_system.menu_hotel_configuration"
+        sequence="1" />
+    <menuitem id="hotel_rest_api_menu" name="WebService Accounts" parent="hotel_rest_api_main_menu"
+        action="hotel_rest_api_action" sequence="3" />
+
+
+</odoo>

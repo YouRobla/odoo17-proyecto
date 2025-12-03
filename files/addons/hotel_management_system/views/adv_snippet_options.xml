@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2017-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <data noupdate="0">
+        <template id="snippet_options" inherit_id="website.snippet_options" name="Website Order Advance Payment Snippet Options">
+            <xpath expr="//div[@data-selector='main:has(.oe_website_sale .o_wizard)']" position="inside">
+                <we-checkbox string="Advance Payment"
+                            data-customize-website-views="hotel_management_system.checkout_layout_advance_payment"
+                            data-no-preview="true"
+                            data-reload="/"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

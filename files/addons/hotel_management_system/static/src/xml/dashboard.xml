@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<templates xml:space="preserve">
+    <t t-name="hotel_dashboard_action">
+        <div class="booking-container">
+            <header>
+                <div>
+                    <div class="dashboard-title">Hotel Management Dashboard</div>
+                </div>
+                <div class="hotel-config">
+                    <select class="form-select" t-on-change="(ev) => this._onChangeHotel(ev)">
+                        <option selected="selected" value="0">All</option>
+                        <t t-foreach="this.state.hotels" t-as="hotel" t-key="hotel['id']">
+                            <option t-att-value="hotel['id']">
+                                <t t-out="hotel['name']"/>
+                            </option>
+                        </t>
+                    </select>
+                    <select class="form-select" t-on-change="(ev) => this._onSelectPeriod(ev)">
+                        <option value="1">Last 7 Days</option>
+                        <option selected="selected" value="2">Last 30 Days</option>
+                        <option value="3">Last 90 Days</option>
+                        <option value="4">Last 180 Days</option>
+                        <option value="5">Last 365 Days</option>
+                        <option value="6">Last 3 Years</option>
+                    </select>
+                    <div class="btn sync-dashboard" t-on-click="this._fetchDashboardData">
+                        <i class="fa fa-refresh"/>
+                    </div>
+                </div>
+            </header>
+            <div class="cards-container" t-on-click="OnclickContainer">
+                <div class="card-container card-summary">
+                    <div class="card-header">
+                        <div>
+                            <t t-esc="this.state.periodName"/>
+                        </div>
+                    </div>
+                    <div class="card-content d-flex">
+                        <div class="booking-card text-center total_booking">
+                            <i class="fa fa-calendar-check-o fa-2x card-icon total_booking"></i>
+                            <h4 class="total_booking" t-att-count="state.kpis.total_bookings">Total Bookings</h4>
+                            <p t-esc="state.kpis.total_bookings || 0" class="total_booking"/>
+                        </div>
+                        <div class="separator"></div>
+                        <div class="booking-card text-center revenue">
+                            <i class="fa fa-money fa-2x card-icon revenue"></i>
+                            <h4 t-att-count="1" class="revenue">Revenue</h4>
+                            <p t-esc="state.kpis.total_revenue || 0"  class="revenue"/>
+                        </div>
+                        <div class="separator"></div>
+                        <div class="booking-card text-center cancellation">
+                            <i class="fa fa-ban fa-2x card-icon cancellation" t-att-count="state.kpis.canceled_bookings"></i>
+                            <h4 class="cancellation" t-att-count="state.kpis.canceled_bookings">Cancellations</h4>
+                            <p t-esc="state.kpis.canceled_bookings || 0" class="cancellation" t-att-count="state.kpis.canceled_bookings"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container card-today">
+                    <div class="card-header">
+                        <div>Today</div>
+                    </div>
+                    <div class="card-content d-flex mt-4">
+                        <div class="booking-card text-center current_bookings">
+                            <i class="fa fa-calendar-check-o fa-2x card-icon current_bookings"></i>
+                            <h4 class="current_bookings" t-att-count="state.kpis.ongoing_bookings">Current Bookings</h4>
+                            <span class="current_bookings" t-esc="state.kpis.ongoing_bookings || 0" />
+                        </div>
+                        <div class="separator"></div>
+                        <div class="booking-card text-center occupancy_rate">
+                            <i class="fa fa-bed fa-2x card-icon"></i>
+                            <h4 t-att-count="0">Occupancy Rate</h4>
+                            <span t-esc="state.kpis.occupancy_rate || 0" />%
+                        </div>
+                        <div class="separator"></div>
+                        <div class="booking-card text-center pending_checkins">
+                            <i class="fa fa-sign-in fa-2x card-icon pending_checkins"></i>
+                            <h4 class="pending_checkins" t-att-count="state.kpis.pending_checkins">Pending Check-ins</h4>
+                            <p t-esc="state.kpis.pending_checkins || 0" />
+                        </div>
+                        <div class="separator"></div>
+                        <div class="booking-card text-center pending_checkouts" >
+                            <i class="fa fa-sign-out fa-2x card-icon pending_checkouts"></i>
+                            <h4 class="pending_checkouts" t-att-count="state.kpis.pending_checkouts">Pending Check-outs</h4>
+                            <p t-esc="state.kpis.pending_checkouts || 0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container" style="flex-direction:column;align-items: baseline;">
+                    <div class="stats-header">
+                        <div class="heading">Today Statistics</div>
+                        <div id="clock" class="subheading">
+                            <t t-esc="this.state.datetime"/>
+                        </div>
+                    </div>
+                    <div class="card-content" style="flex-direction:column;">
+                        <div class="stats-section d-flex justify-content-between">
+                            <div class="stats-column" style="text-align:left;">
+                                <div class="label">Income</div>
+                                <div class="value">
+                                    <t t-esc="this.state.today_revenue"/>
+                                </div>
+                            </div>
+                            <div class="stats-column" style="text-align:right;">
+                                <div class="label">Today</div>
+                                <div class="value">
+                                    <t t-if="this.state.revenue_percent > 0">
+                                        <span style="margin-left: auto;" class="percentage value positive">
+                                            <t t-esc="this.state.revenue_percent"/>%
+                                        </span>
+                                    </t>
+                                    <t t-elif="this.state.revenue_percent == 0">
+                                        <span style="margin-left: auto;" class="percentage value">
+                                            <t t-esc="this.state.revenue_percent"/>%
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span style="margin-left: auto;" class="percentage value negative">-
+                                            <t t-esc="this.state.revenue_percent"/>%
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="separator-horizontal"></div>
+                        <div class="comparison">
+                            <div class="comparison-text">Compared to
+                                <t t-esc="this.state.yesterday_revenue"/> yesterday
+                            </div>
+                            <div class="comparison-week">Last week:
+                                <t t-esc="this.state.last_week_revenue"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rooms-container mt-4">
+                <div class="owl-carousel owl-theme room-cards">
+                    <t t-foreach="this.state.rooms" t-as="room" t-key="room['id']">
+                        <div class="room-card item" t-on-click.stop="() => this.openRoom(room['id'])">
+                            <img t-att-src="'/web/image/product.template/' + room['id'] + '/image_128'" alt="Room Image" class="room-image"/>
+                            <div class="room-details">
+                                <div class="room-name" t-esc="room['display_name']"></div>
+                                <div class="room-description" t-if="room['product_website_description']" t-esc="room['product_website_description']"></div>
+                                <div class="room-price">
+                                    <span t-esc="this.currency + room['list_price']"/>
+                                    <span>/night</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            <div class="chart-container mt-4">
+                <div class="chart-grid">
+                    <t t-foreach="state.charts" t-as="chart" t-key="chart.id">
+                        <div class="chart-wrapper">
+                            <div class="chart-config">
+                                <h3 style="color:#2f6b6d;" t-esc="chart.title" />
+                                <select t-if="[4,5].includes(chart.index)" class="chart-type-options form-select" t-on-change="(ev) => this._onChartTypeChange(ev, chart.id)">
+                                    <option value="line" t-att-selected="chart.type === 'line'">Line</option>
+                                    <option value="bar" t-att-selected="chart.type === 'bar'">Bar</option>
+                                    <option value="pie" t-att-selected="chart.type === 'pie'">Pie</option>
+                                </select>
+                            </div>
+                            <t t-set="props" t-value="this.getChartProps(chart)"/>
+                            <HotelChart t-props="props"/>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="HotelChart">
+        <div class="booking-chart" t-attf-index="this.props.index"></div>
+    </t>
+</templates>

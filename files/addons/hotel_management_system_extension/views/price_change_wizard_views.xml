@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista del formulario del wizard -->
+    <record id="view_price_change_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.booking.line.price.change.wizard.form</field>
+        <field name="model">hotel.booking.line.price.change.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cambio de Precio">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="booking_line_id" invisible="1"/>
+                            Cambio de Precio - <field name="booking_line_id" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Información de Precios">
+                            <field name="original_price" widget="monetary" readonly="1"/>
+                            <field name="new_price" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Detalles del Cambio">
+                            <field name="booking_line_id" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Motivo del Cambio">
+                        <field name="reason" placeholder="Explique detalladamente el motivo del cambio de precio..."/>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button name="action_confirm_price_change" 
+                            string="Confirmar Cambio" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancelar" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para abrir el wizard -->
+    <record id="action_price_change_wizard" model="ir.actions.act_window">
+        <field name="name">Cambio de Precio</field>
+        <field name="res_model">hotel.booking.line.price.change.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_price_change_wizard_form"/>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extensión Simplificada de la Vista de Booking Bill -->
+    <record id="view_compute_bill_extension" model="ir.ui.view">
+        <field name="name">booking.bill.form.extension</field>
+        <field name="model">booking.bill</field>
+        <field name="inherit_id" ref="hotel_management_system.view_compute_bill"/>
+        <field name="arch" type="xml">
+            
+            <!-- Solo agregar campos invisibles necesarios para el funcionamiento interno -->
+            <xpath expr="//field[@name='is_hide_print_bill']" position="after">
+                <field name="additional_services_total" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="total_final_amount" invisible="1"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

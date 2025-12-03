@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.hotel.management</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="60" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Booking" string="Hotel Management"
+                        name="hotel_management_system">
+                        <block title="Hotel Configuration" name="hotel_configuration">
+                            <setting id="booking_product" string="Website"
+                                help="Settings on this page will apply to this website">
+                                <field name="website_id"
+                                    options="{'no_open': True, 'no_create': True}" />
+                            </setting>
+                            <setting id="default_booking_product" string="Homepage Booking Product"
+                                help="Product will use for homepage...">
+                                <field name="website_homepage_product_ids" widget="many2many_tags"
+                                    domain="[('is_room_type', '=', True)]" />
+                            </setting>
+                            <setting id="checkout_hours" string="Room Checkout Hour"
+                                help="Room checkout will consider with checkout hours time Ex - For 3:30 PM, we will pass 15.30">
+                                <field name="checkout_hours" required='True' widget="float_time" />
+                            </setting>
+                            <setting id="hotel_product_variant" string="Trending Products"
+                                help="Select some trending products">
+                                <field name="hotel_product_variant" widget="many2many_tags"
+                                    domain="[('is_room_type', '=', True)]" />
+                            </setting>
+                            <!-- <setting id="cron" string="Trending cron"
+                                help="Select some trending cron">
+                                <group>
+                                    <field name="interval_number" />
+                                    <field name="interval_type" />
+                                </group>
+                            </setting> -->
+                            <setting id="cron" string="Maximum trending Room Limit"
+                                help="Select maximum trending Room Limit">
+                                <field name="max_trending_limit" />
+                            </setting>
+                            <!-- <setting id="house_keeping_mode" string="House Keeping Mode"
+                                help="Select mode for assigning House Keeping">
+                                <field name="hk_mode" />
+                            </setting> -->
+                            <setting id="auto_invoice" string="Automatic Invoice Generation"
+                                help="Generate Invoice Automatically">
+                                <field name="auto_invoice_gen" />
+                            </setting>
+                            <setting id="auto_room_selection" string="Automatic Room Selection"
+                                help="If enabled then NO Room no. selection will be available on Website. Room no. will be selected in the automatically on the basis of availability.">
+                                <field name="auto_room_selection" />
+                            </setting>
+                            <setting id="auto_bill_gen" string="Automatic Bill Generation"
+                                help="Generate Bill for Agents Automatically">
+                                <field name="auto_bill_gen" />
+                            </setting>
+                            <setting id="housekeeping_config" string="Housekeeping Configurations"
+                                help="Housekeeping configuration">
+                                <field name="housekeeping_config" widget="radio"/>
+                            </setting>
+                            <setting id="team_id" string="HouseKeeping Team"
+                                help="HouseKeeping Team">
+                                <field name="team_id" />
+                            </setting>
+
+                            <!-- Advance Payment -->
+                            <setting
+                                id="account_receivable" string="Advance Receivable Account"
+                                help="Receivable Account for Advance payments">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label string="Account:" for="account_receivable"
+                                            class="col-lg-3 o_light_label" />
+                                        <field name="account_receivable"
+                                            options="{'no_create_edit': True, 'no_open': True}" />
+                                    </div>
+                                </div>
+                            </setting>
+                            
+                            <setting id="feedback_config_id" string="Booking Feedback Configuration"
+                                help="Booking Feedback">
+                                <field name="feedback_config" />
+                            </setting>
+
+                            <!-- Auto Confirm Booking -->
+                            <setting id="auto_confirm_booking" string="Automatic Booking Confirmation"
+                                help="If enabled, then the booking associated to the sale order will be confirmed automatically after the full payment.">
+                                <field name="auto_confirm_booking" />
+                            </setting>
+
+
+                            <block title="Mail Actions Configuration" name="mail_setting_container">
+
+
+                                <setting id="mail_config_id" string="Send On Confirm"
+                                    help="Send an email on the booking confirmation.">
+                                    <field name="send_on_confirm" />
+                                </setting>
+                                <setting id="mail_allot_id" string="Send On Allot"
+                                    help="Send an email on the room allotment.">
+                                    <field name="send_on_allot" />
+                                </setting>
+                                <setting id="mail_cancel_id" string="Send On Cancel"
+                                    help="Send an email on the booking cancellation.">
+                                    <field name="send_on_cancel" />
+                                </setting>
+                                <setting id="mail_checkout_id" string="Send On Checkout"
+                                    help="Send an email on the room checkout.">
+                                    <field name="send_on_checkout" />
+                                </setting>
+                            </block>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_booking_config_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'hotel_management_system', 'bin_size': False}</field>
+        </record>
+
+        
+    </data>
+</odoo>

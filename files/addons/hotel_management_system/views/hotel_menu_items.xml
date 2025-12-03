@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <menuitem id="menu_hotel_management_root" name="Hotel"
+        web_icon="hotel_management_system,static/description/icon.png" sequence="1"
+        action="hotel_management_system.action_hotel_dashboard" groups="hotel_owner_group,hotel_laundry_group" />
+
+    <menuitem id="menu_hotel_dashboard_root" name="Dashboard" sequence="2"
+        parent="menu_hotel_management_root"
+        action="hotel_management_system.action_hotel_dashboard"
+        groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="menu_hotel_owner_dashboard" name="Owner Dashboard" sequence="2"
+        parent="menu_hotel_dashboard_root"
+        action="hotel_management_system.wk_hotel_dashboard_action" groups="hotel_owner_group" />
+
+    <menuitem id="menu_hotel_booking" name="Bookings" sequence="3"
+        parent="hotel_management_system.menu_hotel_management_root"
+        action="hotel_management_system.action_hotel_booking_menu" groups="hotel_owner_group,hotel_reception_group"/>
+
+    <menuitem id="menu_hotel_rooms" name="Rooms" sequence="3"
+        parent="hotel_management_system.menu_hotel_management_root"
+        groups="hotel_owner_group,hotel_reception_group" />
+    <menuitem id="menu_hotel_hotel_menus" name="Hotels"
+        parent="hotel_management_system.menu_hotel_management_root"
+        sequence="2" groups="hotel_owner_group,hotel_reception_group" />
+    <menuitem id="menu_hotel_hotels_menu" name="Hotels"
+                parent="hotel_management_system.menu_hotel_hotel_menus"
+                action="action_hotel_hotels" sequence="1" />
+    <menuitem id="menu_room_product" name="Hotel Rooms" sequence="2"
+        parent="hotel_management_system.menu_hotel_hotel_menus"
+        action="action_hotel_management_booking_product"
+        groups="hotel_owner_group,hotel_reception_group" />
+    <menuitem id="menu_room_product_variant" name="Product variants" sequence="2"
+        parent="menu_hotel_rooms" groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="menu_hotel_housekeeping" name="House Keeping" sequence="5"
+        parent="menu_hotel_management_root"
+        action="hotel_management_system.action_hotel_house_keeping"
+        groups="hotel_owner_group,hotel_housekeeper_group,hotel_reception_group" />
+
+    <menuitem id="menu_house_alloted_services" name="Alloted Services" sequence="6"
+        parent="menu_hotel_management_root"
+        action="hotel_management_system.action_hotel_service_lines_menu"
+        groups="hotel_owner_group,hotel_laundry_group,hotel_reception_group" />
+
+    <menuitem id="menu_hotel_reporting" name="Reporting" sequence="7"
+        parent="hotel_management_system.menu_hotel_management_root"
+        groups="hotel_owner_group,hotel_reception_group" />
+    <menuitem id="menu_hotel_reporting_booking" name="Booking" sequence="1"
+        parent="menu_hotel_reporting"
+        action="hotel_management_system.action_hotel_booking_reporting_menu"
+        groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="rating_rating_menu_hotel"
+            name="Customer Ratings"
+            action="hotel_management_system.rating_rating_action_hotel_report"
+            parent="menu_hotel_reporting"
+            sequence="40"/>
+
+    <menuitem id="menu_hotel_configuration" name="Configuration"
+        parent="hotel_management_system.menu_hotel_management_root"
+        sequence="20" action="action_hotel_management_menu"
+        groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="booking_menu_configuration" name="Settings"
+        parent="menu_hotel_configuration"
+        sequence="0" action="action_booking_config_settings"
+        groups="base.group_system,hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="menu_hotel_service_facility" name="Service and Facility" sequence="2"
+        parent="hotel_management_system.menu_hotel_configuration"
+        groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="menu_hotel_service" name="Services" sequence="3"
+        parent="hotel_management_system.menu_hotel_service_facility"
+        action="action_hotel_service_menu" groups="hotel_owner_group,hotel_reception_group" />
+    <menuitem id="menu_hotel_facility" name="Facility" sequence="4"
+        parent="hotel_management_system.menu_hotel_service_facility"
+        action="action_hotel_facility_menu" groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem id="menu_hotel_service_items" name="Service Items" sequence="5"
+        parent="hotel_management_system.menu_hotel_configuration"
+        groups="hotel_owner_group,hotel_reception_group" />
+
+    <menuitem name="Hotel Notifications"
+        id="hotel_mail"
+        parent="hotel_management_system.menu_hotel_configuration"
+        sequence="5" groups="hotel_owner_group,hotel_reception_group" />
+    <menuitem id="menu_hotel_mails" name="Email Templates"
+        sequence="6" parent="hotel_management_system.hotel_mail"
+        action="action_hotel_email_template_tree_all"
+        groups="hotel_owner_group,hotel_reception_group" />
+</odoo>

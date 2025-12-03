@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="1">
+        <!-- Hotel Booking Line Sequence -->
+        <record id="hotel_booking_line_sqn" model="ir.sequence">
+            <field name="name">Booking line sequence</field>
+            <field name="code">hotel.booking.line</field>
+            <field name="prefix">BL</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id"></field>
+        </record>
+
+        <!-- Hotel Booking Sequece -->
+        <record id="hotel_booking_sqn" model="ir.sequence">
+            <field name="name">Booking sequence</field>
+            <field name="code">hotel.booking</field>
+            <field name="prefix">B</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False" />
+        </record>
+
+        <!-- Hotel HouseKeeping Sequence -->
+        <record id="hotel_housekeeping_sequence" model="ir.sequence">
+            <field name="name">House Keeping sequence</field>
+            <field name="code">hotel.housekeeping</field>
+            <field name="prefix">HK</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <!-- House Service Lines Sequence -->
+        <record id="hotel_service_lines_sequence" model="ir.sequence">
+            <field name="name">House Service Lines</field>
+            <field name="code">hotel.booking.service.line</field>
+            <field name="prefix">HRS</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <!-- Create Payment Method -->
+        <record id="payment_method_hotel_demo" model="payment.method">
+            <field name="name">Hotel</field>
+            <field name="code">hotel</field>
+            <field name="sequence">1</field>
+            <field name="active">True</field>
+            <field name="image" type="base64"
+                file="hotel_management_system/static/description/icon.png" />
+            <field name="support_tokenization">True</field>
+            <field name="support_express_checkout">False</field>
+            <field name="support_refund">partial</field>
+        </record>
+    </data>
+</odoo>

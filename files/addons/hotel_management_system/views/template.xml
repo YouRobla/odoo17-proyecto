@@ -1,0 +1,1212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <!-- Product options: OpenChatter -->
+    <template id="inherit_product_comment" inherit_id="website_sale.product_comment"
+        name="Room Discussion and Rating">
+        <xpath expr="//div[hasclass('o_shop_discussion_rating')]" position="attributes">
+            <attribute name="t-if">not product.is_room_type</attribute>
+        </xpath>
+    </template>
+
+    <template id="horizontal_tab">
+        <div class="container mt16">
+            <div class="mt16 RoomdescriptionTab">
+                <ul class="nav nav-tabs px-4">
+                    <li class="nav-item active">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#info4">
+                            Room Information
+                        </a>
+                    </li>
+                    <li class="nav-item ml-5">
+                        <a class="nav-link" data-bs-toggle="tab"
+                            style="overflow: hidden;text-overflow: ellipsis;" href="#info5">
+                            Facilities and Services</a>
+                    </li>
+                    <li class="nav-item ml-5">
+                        <a class="nav-link" data-bs-toggle="tab"
+                            style="overflow: hidden;text-overflow: ellipsis;" href="#info6">
+                            Reviews</a>
+                    </li>
+                    <li class="nav-item ml-5">
+                        <a class="nav-link" data-bs-toggle="tab"
+                            style="overflow: hidden;text-overflow: ellipsis;" href="#info7">
+                            Refund Policy</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt16 mb16">
+                <div class="tab-pane active" id="info4">
+                    <p>
+                        <t t-esc="product.product_website_description" />
+                    </p>
+                </div>
+
+                <div class="tab-pane" id="info5">
+                    <div class="row">
+                        <t t-if="facilities">
+                            <tr t-foreach="facilities" t-as="facility">
+                                <div class="col-md-4 col-sm-6 col-12">
+                                    <div class="d-flex border my-auto p-3 mb-2">
+                                        <div>
+                                            <span t-field="facility.logo"
+                                                t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded o_image_64_max'}" />
+                                        </div>
+                                        <div class="ms-1 pt-2">
+                                            <p>
+                                                <t t-esc="facility.name" />
+                                            </p>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </tr>
+                        </t>
+                        <t t-if="services">
+                            <tr t-foreach="services" t-as="service">
+                                <div class="col-md-4 col-sm-6 col-12">
+                                    <div class="d-flex border my-auto p-3 mb-2">
+                                        <div>
+                                            <span t-field="service.logo"
+                                                t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded o_image_64_max'}" />
+                                        </div>
+                                        <div class="ms-1 pt-2">
+                                            <p>
+                                                <t t-esc="service.name" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </tr>
+                        </t>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="info6">
+                    <t t-if="is_view_active('website_sale.product_comment')">
+                        <a
+                            class="o_product_page_reviews_title d-flex justify-content-between text-decoration-none collapsed"
+                            type="button" data-bs-toggle="collapse"
+                            data-bs-target="#o_product_page_reviews_content" aria-expanded="false"
+                            aria-controls="o_product_page_reviews_content">
+                            <h3 class="mb32">Customer Reviews</h3>
+                            <i class="fa align-self-start" />
+                        </a>
+                        <div id="o_product_page_reviews_content" class="collapse">
+                            <t t-call="portal.message_thread">
+                                <t t-set="object" t-value="product" />
+                                <t t-set="display_rating" t-value="True" />
+                                <t t-set="message_per_page" t-value="5" />
+                                <t t-set="two_columns" t-value="true" />
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <p>No customer reviews for the moment.</p>
+                    </t>
+                </div>
+                <div class="tab-pane" id="info7">
+                    <t t-if="product.room_policy" t-esc="product.room_policy" />
+                    <p t-else="">No return policy define for the moment.</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="product_tab" inherit_id="website_sale.product" customize_show="True"
+        name="Product Tabs">
+        <xpath expr="//div[@t-field='product.website_description']" position="before">
+            <div class="oe_structure" />
+            <t t-set="services" t-value="product.service_ids" />
+            <t t-set="facilities" t-value="product.facility_ids" />
+            <div class="container mt16" t-if='services or facility'>
+                <t t-call='hotel_management_system.horizontal_tab' />
+            </div>
+            <div class="oe_structure" />
+        </xpath>
+    </template>
+
+    <template id="guest_info_page" name="Guest Info">
+        <t t-set='title'>
+            Guest Info
+        </t>
+        <t t-call="website.layout">
+            <div id="wrap">
+                <t t-set="website_sale_order" t-value="website.sale_get_order()" />
+                <div class="container oe_website_sale py-2">
+                    <t t-call="website_sale.wizard_checkout" />
+                    <div class="row">
+                        <div class="col-12 col-xl-4 order-xl-2 d-none d-xl-block">
+                            <div class="card">
+                                <div class="card-body p-0 p-lg-4">
+                                    <t t-call="website_sale.total">
+                                        <t t-set="redirect" t-valuef="/shop/extra_info" />
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-8 order-xl-1 oe_cart">
+                            <section class="s_website_form" data-vcss="001"
+                                data-snippet="s_website_form">
+                                <div class="container">
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="addguestModalCenter" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered"
+                                            role="document">
+                                            <div class="modal-content border border-light inner_div">
+                                                <div class="modal-header d-flex justify-content-between">
+                                                    <h5 class="modal-title text-dark"
+                                                        >
+                                                        <strong>Add Guest</strong>
+                                                    </h5>
+                                                    <span type="button" class="close"
+                                                        data-bs-dismiss="modal" aria-label="Close">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            width="16" height="16"
+                                                            fill="currentColor" class="bi bi-x-lg"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <!-- <form> -->
+                                                <div class="modal-body">
+                                                    <div
+                                                        class="addGuestForm text-dark row ml-2 mr-2">
+                                                        <div class="adultChildnotice col-12">
+                                                            <span>Name should be as per official
+                                                                govt. ID &#38; travelers below 18
+                                                                years of age cannot travel alone.</span>
+                                                        </div>
+                                                        <div class="form-group mt16 col-12">
+                                                            <label class="inputGuestlabel"
+                                                                for="fullName">Full Name</label>
+                                                            <input class="form-control fullName"
+                                                                type="text" name="fullName"
+                                                                placeholder="Enter Name"
+                                                                required="1"
+                                                                value="" />
+                                                        </div>
+
+                                                        <div class="form-group col-12 mt-3">
+                                                            <label class="inputGuestlabel" for='age'>
+                                                                Age
+                                                            </label>
+
+                                                            <input class="form-control age"
+                                                                type="number" name="age"
+                                                                placeholder="Enter Age" value=""
+                                                                required="1" />
+                                                            <input class="table_id_store"
+                                                                type="hidden" name="table_id_store"
+                                                                value="" />
+                                                        </div>
+                                                        <div class="form-group col-12 mt-3">
+                                                            <label class="inputGuestlabel"
+                                                                for="gender">
+                                                                Gender
+                                                            </label>
+                                                            <div name="gender">
+                                                                <div
+                                                                    class="form-check form-check-inline">
+                                                                    <input
+                                                                        class="form-check-input genderValue"
+                                                                        type="radio"
+                                                                        name="genderinlineRadioOptions"
+                                                                        id="maleinlineRadio1"
+                                                                        value="male" checked="True" />
+                                                                    <label
+                                                                        class="form-check-label inputGuestgenderlabel"
+                                                                        for="maleinlineRadio1">Male</label>
+                                                                </div>
+                                                                <div
+                                                                    class="form-check form-check-inline ml64">
+                                                                    <input
+                                                                        class="form-check-input genderValue"
+                                                                        type="radio"
+                                                                        name="genderinlineRadioOptions"
+                                                                        id="femaleinlineRadio2"
+                                                                        value="female" />
+                                                                    <label
+                                                                        class="form-check-label inputGuestgenderlabel"
+                                                                        for="femaleinlineRadio2">
+                                                                        Female</label>
+                                                                </div>
+                                                                <div
+                                                                    class="form-check form-check-inline ml64">
+                                                                    <input
+                                                                        class="form-check-input genderValue"
+                                                                        type="radio"
+                                                                        name="genderinlineRadioOptions"
+                                                                        id="otherinlineRadio2"
+                                                                        value="other" />
+                                                                    <label
+                                                                        class="form-check-label inputGuestgenderlabel"
+                                                                        for="otherinlineRadio2">
+                                                                        Other</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer addGuest_button">
+                                                    <button
+                                                        class="btn btn-primary addGuestModal_button float-left">
+                                                        Add</button>
+                                                    <span class="btn btn-secondary float-right"
+                                                        data-bs-dismiss="modal">Cancel</span>
+                                                </div>
+                                                <!-- </form> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion" id="accordionGuest">
+                                        <tr t-foreach="website_sale_order.order_line" t-as="line">
+                                            <t t-if='line.product_id.product_tmpl_id.is_room_type'>
+                                                <div class="col-lg-12  m-2 p-2">
+                                                    <div class="card">
+                                                        <div class="card-header"
+                                                            t-att-id="line.name_short">
+                                                            <h2>
+                                                                <button class="btn btn-link px-0 py-0"
+                                                                    type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    t-attf-data-bs-target="#collapse{{line.id}}"
+                                                                    aria-expanded="true"
+                                                                    t-attf-aria-controls="collapse{{line.id}}">
+                                                                    <span class="name_short_of_room fw-bolder"
+                                                                        t-esc="line.name_short"
+                                                                        style='font-size: 20px;'
+                                                                        t-att-value='check_out' />
+                                                                </button>
+                                                            </h2>
+                                                            <span class="max_guest ml-2">
+                                                                <strong>No. of guest: </strong>
+                                                                <t
+                                                                    t-esc="line.product_id.max_adult" />
+                                                                adults, <t
+                                                                    t-esc="line.product_id.max_child" />
+                                                                child </span>
+                                                            <div t-attf-id="collapse{{line.id}}"
+                                                                class="collapse show"
+                                                                t-att-aria-labelledby="line.name_short"
+                                                                data-parent="#accordionGuest">
+                                                                <div class="card-body outer_div"
+                                                                    t-att-id="line.id"
+                                                                    style="overflow:auto;">
+                                                                    <input type="number"
+                                                                        class="d-none max_adult"
+                                                                        t-att-value='line.product_id.max_adult' />
+                                                                    <input type="number"
+                                                                        class="d-none max_child"
+                                                                        t-att-value='line.product_id.max_child' />
+                                                                    <!-- <input type="text"
+                                                                    class="d-none room_name"
+                                                                    t-att-value='line.product_id.name'/> -->
+                                                                    <!-- <form> -->
+                                                                    <table
+                                                                        class="mb16 shadow-sm table table-striped table-sm js_cart_lines"
+                                                                        t-att-id="line.product_id.id">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th scope="col">Name</th>
+                                                                                <th scope="col">
+                                                                                    Gender</th>
+                                                                                <th scope="col">Age</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody
+                                                                            class="guest_info_body">
+                                                                            <div id="table_row">
+                                                                                <t
+                                                                                    t-if='line.guest_info_ids'>
+                                                                                    <t
+                                                                                        t-foreach="line.guest_info_ids"
+                                                                                        t-as="guest_id">
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <!--
+                                                                                                <div
+                                                                                                class="form-group"> -->
+                                                                                                <input
+                                                                                                    class="form-control"
+                                                                                                    type="text"
+                                                                                                    name="name"
+                                                                                                    t-att-value='guest_id.name'
+                                                                                                    required="1" />
+                                                                                                <!--
+                                                                                                </div> -->
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <!--
+                                                                                                <div
+                                                                                                class="form-group"> -->
+                                                                                                <select
+                                                                                                    class="form-control"
+                                                                                                    name="gender"
+                                                                                                    id="gender"
+                                                                                                    t-att-value='guest_id.gender'
+                                                                                                    required="1">
+                                                                                                    <option
+                                                                                                        value="male"
+                                                                                                        selected="1">
+                                                                                                        Male</option>
+                                                                                                    <option
+                                                                                                        value="female">
+                                                                                                        Female</option>
+                                                                                                    <option
+                                                                                                        value="other">
+                                                                                                        Other</option>
+                                                                                                </select>
+                                                                                                <!--
+                                                                                                </div> -->
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <!--
+                                                                                                <div
+                                                                                                class="form-group"> -->
+                                                                                                <input
+                                                                                                    class="form-control"
+                                                                                                    type="number"
+                                                                                                    t-att-value='guest_id.age'
+                                                                                                    name="age"
+                                                                                                    required="1" />
+                                                                                                <!--
+                                                                                                </div> -->
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span
+                                                                                                    type="button"
+                                                                                                    class="btn mt-2 mb-2 btn-danger btn-sm inline remove_row">
+                                                                                                    Remove</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </t>
+                                                                                </t>
+                                                                                <t t-else="">
+
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <!--
+                                                                                            <div
+                                                                                            class="form-group"> -->
+                                                                                            <input
+                                                                                                class="form-control"
+                                                                                                type="text"
+                                                                                                name="name"
+                                                                                                required="True" />
+                                                                                            <!--
+                                                                                            </div> -->
+                                                                                        </td>
+                                                                                        <td>
+
+                                                                                            <select
+                                                                                                class="form-control"
+                                                                                                name="gender"
+                                                                                                id="gender"
+                                                                                                required="True">
+                                                                                                <option
+                                                                                                    value="male">
+                                                                                                    Male</option>
+                                                                                                <option
+                                                                                                    value="female">
+                                                                                                    Female</option>
+                                                                                                <option
+                                                                                                    value="other">
+                                                                                                    Other</option>
+                                                                                            </select>
+
+                                                                                        </td>
+                                                                                        <td>
+
+                                                                                            <input
+                                                                                                class="form-control"
+                                                                                                type="number"
+                                                                                                name="age"
+                                                                                                required="True" />
+
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span
+                                                                                                type="button"
+                                                                                                class="btn mt-2 mb-2 btn-sm btn-danger inline remove_row d-none">
+                                                                                                Remove</span>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </t>
+                                                                            </div>
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <!-- </form> -->
+                                                                    <div class="add_row">
+                                                                        <span class="add_Guest_span">+
+                                                                            Add Guest</span>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </tr>
+                                    </div>
+                                    <p class="alert alert-warning m-4" style="display:none;"
+                                        id="data_missing">Please Fill data in all fields... </p>
+                                    <p class="alert alert-warning m-4" style="display:none;"
+                                        id="acceptable_guest">Please manage child and adult
+                                        according room requirement... </p>
+                                    <p class="alert alert-warning m-4" style="display:none;"
+                                        id="correct_age">Please fill correct age...</p>
+                                    <div>
+                                        <button id="submit_detail"
+                                            class="btn btn-success m-2 float-right">
+                                            <span id="submit_detail">Submit Detail</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="product_price_inherit" inherit_id="website_sale.product_price">
+        <xpath expr="//span[@itemprop='price']" position="after">
+            <span t-if="product.is_room_type">/night</span>
+        </xpath>
+
+    </template>
+
+    <template id="inherit_product_quantity_template" inherit_id="website_sale.product_quantity">
+        <xpath expr="//div[@contenteditable='false']" position="before">
+            <span t-if="product.is_room_type" class="p-1 roomCategonProductPage">No. Of Rooms</span>
+        </xpath>
+    </template>
+
+    <template id="product_booking_bar" inherit_id="website_sale.product">
+
+        <!-- <xpath expr="//*[@id='product_details']" position="attributes">
+            <attribute name='t-att-class'>'col-md-6 col-xl-4' if not product.is_room_type else
+                'col-lg-6 mt-md-4 room_details'</attribute>
+        </xpath> -->
+
+        <xpath expr="//div[@id='add_to_cart_wrap']" position="before">
+            <t t-set="website_sale_order" t-value="website.sale_get_order()" />
+            <div t-if="product.is_room_type" class="row">
+                <input id="prod_hotel_id" class="d-none" type="number" t-att-value="product.hotel_id.id"/>
+                <div class='text-muted text-justify mb-2 col-12'>
+                    <span t-esc='product.product_website_description' />
+                </div>
+                <div class='col-12 mb-4'>
+                    <div class='d-flex justify-content-between'>
+                        <div>
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                    fill="currentColor" class="bi bi-people-fill"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                    <path fill-rule="evenodd"
+                                        d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                                    <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                                </svg>
+                                <span>
+                                    <span class='text-muted'> No. Of Adults:</span>
+                                    <t t-esc='product.max_adult' />
+                                </span>
+                            </span>
+                        </div>
+                        <div t-if='product.max_child'>
+                            <i class="fa fa-child" />
+                            <span>
+                                <span class='text-muted'> No. Of Childs:</span>
+                                <t t-esc='product.max_child' />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 form-group">
+                    <label class="roomCategonProductPage" for="check_in_cart">Check in</label>
+                    <input class="form-control" name="check_in_cart" id="check_in_cart" type="date"
+                        t-att-value="check_in_cart.date() if check_in_cart else (website_sale_order.hotel_check_in.date() if website_sale_order.hotel_check_in and website_sale_order.order_line  else '')" />
+                </div>
+                <div class="col-6 form-group">
+                    <label class="roomCategonProductPage" for="check_out_cart">Check out</label>
+                    <input class="form-control" name="check_out_cart" id="check_out_cart"
+                        type="date"
+                        t-att-value="check_out_cart.date() if check_out_cart else (website_sale_order.hotel_check_out.date() if website_sale_order.hotel_check_out and website_sale_order.order_line else '')" />
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//a[@id='add_to_cart']" position="replace">
+            <a role="button" t-if="not product.is_room_type" id="add_to_cart"
+                class="btn btn-primary js_check_product a-submit flex-grow-1"
+                href="#">
+                <i class="fa fa-shopping-cart mr-2" /> Add To Cart </a>
+        </xpath>
+        <xpath expr="//a[@id='add_to_cart']" position="before">
+
+            <a t-if="product.is_room_type" role="button" id="check_booking_room_availability"
+                name="check_booking_room_availability"
+                class="btn btn-primary btn-lg my-4 roomCategonBookButton text-light px-4 font-weight-bold flex-grow-1">
+                Book Now
+            </a>
+            <div class="mt-1 msg_alert text-danger" style="display:none;" id="available_room">
+                <span>Hurry!</span>
+                <span class="tot_available_room"></span>
+                <span>rooms left</span>
+            </div>
+            <!-- Modal: modalAbandonedCart -->
+            <div class="modal fade right" id="modalAbandonedCart" tabindex="-1" role="dialog"
+                aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+                <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info"
+                    role="document">
+                    <!--Content-->
+                    <div class="modal-content"> <!--Header-->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="myModalLabel">Hotel Validation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <!--Body-->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <p></p>
+                                    <p class="text-center">
+                                        <i class="fa fa-shopping-cart fa-4x"></i>
+                                    </p>
+                                </div>
+                                <div class="col-9">
+                                    <p class='warn-msg'>Room already available in cart with different date!</p>
+                                    <p class='warn-remove-msg'>You can add it after removing the items currently in the cart.</p>
+                                    <p>Do you want to empty the cart?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Footer-->
+                        <div class="modal-footer justify-content-flex-end">
+                            <a type="button" class="btn btn-info text-light emptyCart">Empty cart</a>
+                            <a type="button" class="btn btn-outline-info waves-effect"
+                                data-bs-dismiss="modal">Cancel</a>
+                        </div>
+                    </div>
+                    <!--/.Content-->
+                </div>
+            </div>
+            <!-- <attribute name="t-att-name">'check_booking_room_availability' if
+            product.is_room_type else ''</attribute> -->
+        </xpath>
+
+        <xpath expr="//div[@id='add_to_cart_wrap']" position="after">
+            <div class="w-100">
+                <p class="alert alert-warning mt-1 msg_alert" style="display:none;"
+                    id="caution_date">First select check in and check out date...</p>
+                <p class="alert alert-warning mt-1 msg_alert" style="display:none;" id="caution_msg">Required
+                    Rooms are not available...</p>
+                <p class="alert alert-warning mt-1 msg_alert" style="display:none;"
+                    id="caution_date_mismatched">You have added room for different date, if want to
+                    booking for another date kindly remove room first and try again...</p>
+                <p class="alert alert-success mt-1 msg_alert" style="display:none;" id="success_msg">Room
+                    successfully added into cart...</p>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_my_booking" name="My Booking" customize_show="True"
+        inherit_id="portal.portal_my_home"
+        priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!-- <t t-if="restricted_order_count" t-call="portal.portal_docs_entry"> -->
+                <t t-set="icon" t-value="'/hotel_management_system/static/src/img/My-Booking.svg'" />
+                <t t-set="title">My Booking</t>
+                <t t-set="url" t-value="'/my/booking'" />
+                <t t-set="text">See your bookings here</t>
+                <t t-set="placeholder_count" t-value="'booking_count'" />
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_menu_booking" name="My booking entries"
+        inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'my_booking' and not table_active"
+                t-attf-class="breadcrumb-item #{'active ' if not table_active else ''}">
+                <a t-if="table_active" t-attf-href="/my/booking?{{ keep_query() }}">My Booking</a>
+                <t t-else="">My Booking</t>
+            </li>
+            <li t-if="page_name == 'my_booking' and table_active" class="breadcrumb-item active">
+                <t t-esc="booking.sequence_id" />
+            </li>
+        </xpath>
+    </template>
+
+    <template id='sale_booking_order' name='Sale Booking Order'>
+        <t t-call="portal.frontend_layout">
+            <t t-set="is_portal" t-value="True" />
+            <div class="o_portal container mt-3">
+                <div class="row align-items-center bg-white no-gutters">
+                    <div class="col-10">
+                        <ol class="o_portal_submenu breadcrumb mb-0 flex-grow-1 px-0">
+                            <li class="breadcrumb-item ml-1">
+                                <a href="/my/home" aria-label="Home" title="Home">
+                                    <i class="fa fa-home" />
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item ml-1">
+                                <a t-attf-href="/my/booking?{{ keep_query() }}">My Booking</a>
+                            </li>
+                            <li t-if="sale_order" class="breadcrumb-item">
+                                <span t-field="sale_order.type_name" />
+                                <t t-esc="sale_order.name" />
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wrap" class='o_portal_wrap'>
+                <div class="container mb64">
+                    <div class="card pb-5" id="portal_booking_content">
+                        <div t-call="sale.sale_order_portal_content" />
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_booking" name="My Booking">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Booking</t>
+            </t>
+            <t t-if="not bookings">
+                <p>There are currently no booking for your account.</p>
+            </t>
+            <t t-if="bookings" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Booking #</th>
+                        <th>Order Id #</th>
+                        <th class="text-end">Check in</th>
+                        <th class="text-end">Check out</th>
+                        <th class="text-center" />
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <t t-foreach="bookings" t-as="booking">
+                    <tr>
+                        <td class="text-left">
+                            <span t-field="booking.sequence_id" />
+                        </td>
+                        <td class="text-left">
+                            <a t-att-href="'/my/booking/order/%s'%booking.order_id.id">
+                                <t t-esc="booking.order_id.name" />
+                            </a>
+                        </td>
+                        <td class="text-end">
+                            <span t-field="booking.check_in" />
+                        </td>
+                        <td class="text-end">
+                            <span t-field="booking.check_out" />
+                        </td>
+                        <td class="text-center">
+                            <span t-if="booking.status_bar == 'cancel'"
+                                class="badge badge-pill badge-secondary">
+                                <i class="fa fa-fw fa-remove" /> Cancelled </span>
+                            <span t-if="booking.status_bar == 'allot'"
+                                class="badge badge-pill badge-success">
+                                <i class="fa fa-fw fa-check" /> Alloted </span>
+                            <span t-if="booking.status_bar == 'checkout'"
+                                class="badge badge-pill badge-danger">
+                                <i class="fa fa-fw fa-check" /> Checkout </span>
+                            <span t-if="booking.status_bar == 'initial'"
+                                class="badge badge-pill badge-info">
+                                <i class="fa fa-fw fa-envelope" /> Draft </span>
+                        </td>
+                        <td class="text-end">
+                            <span t-field="booking.total_amount" />
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="hotel_management_quanity_inherited_product_id"
+        inherit_id="website_sale.product_quantity">
+        <xpath expr="//input[hasclass('quantity')]" position="replace">
+            <t t-if="product.is_room_type">
+                <t t-set="max_value" t-value="len(product.product_variant_ids)" />
+                <input type="text" readonly="True" class="form-control text-center quantity"
+                    data-min="1" t-att-data-max="max_value" name="add_qty"
+                    t-att-value="add_qty or 1" />
+            </t>
+            <t t-else="">
+                <input type="text" class="form-control text-center quantity" data-min="1"
+                    name="add_qty" t-att-value="add_qty or 1" />
+            </t>
+
+        </xpath>
+    </template>
+
+    <template id="hotel_short_cart_summary" inherit_id="website_sale.total">
+        <xpath expr="//div[@id='cart_total']" position='before'>
+            <t t-if="website_sale_order.hotel_check_in and website_sale_order.hotel_check_out">
+                <h6 t-if="website_sale_order.hotel_id and website_sale_order.hotel_id.name" class='text-start'>
+                    <i class='fa fa-bed'/>
+                    Hotel: <t t-esc="website_sale_order.hotel_id.name" />
+                </h6>
+                <h6 class='text-start'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
+                        <path fill-rule="evenodd"
+                            d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                    </svg>
+                    Check In: <t t-esc="website_sale_order.hotel_check_in.date()" />
+                </h6>
+                <h6 class='text-start'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
+                        <path fill-rule="evenodd"
+                            d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                    </svg>
+                    Check Out: <t t-esc="website_sale_order.hotel_check_out.date()" />
+                </h6>
+                <hr />
+            </t>
+        </xpath>
+    </template>
+
+    <template id="hotel_management_product_inherited_cart" inherit_id="website_sale.cart_lines"
+        name="Inherit cart line template">
+
+        <xpath
+            expr="//div[@id='cart_products']//div[contains(@t-attf-class, 'css_quantity')]//t[@t-if='show_qty']//a"
+            position="replace">
+            <t t-if="line.product_id.product_tmpl_id.is_room_type">
+                <span>
+                </span>
+            </t>
+            <t t-else="">
+                <a href="#" class="js_add_cart_json btn btn-link d-inline-block border-end-0"
+                    aria-label="Remove one" title="Remove one">
+                    <i class="position-relative z-index-1 fa fa-minus" />
+                </a>
+            </t>
+        </xpath>
+        <xpath
+            expr="//div[@id='cart_products']//div[contains(@t-attf-class, 'css_quantity')]//t[@t-if='show_qty']//a[@t-else='']"
+            position="replace">
+            <t t-if="line.product_id.product_tmpl_id.is_room_type">
+                <span>
+                </span>
+            </t>
+            <t t-else="">
+                <a href="#"
+                    class="js_add_cart_json d-inline-block float_left btn btn-link border-start-0"
+                    aria-label="Add one" title="Add one">
+                    <i class="fa fa-plus position-relative z-index-1" />
+                </a>
+            </t>
+        </xpath>
+
+        <xpath
+            expr="//div[@id='cart_products']//div[contains(@t-attf-class, 'css_quantity')]//input[hasclass('js_quantity', 'quantity','form-control')]"
+            position="replace">
+            <t t-if="line.product_id.product_tmpl_id.is_room_type">
+                <input readonly="True" type="text"
+                    class="js_quantity form-control text-center quantity border-start-0 border-end-0"
+                    t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id"
+                    t-att-value="str(int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty)+' nights'"
+                    style="max-width:50%;" />
+            </t>
+            <t t-else="">
+                <input type="text"
+                    class="js_quantity form-control text-center quantity border-start-0 border-end-0"
+                    t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id"
+                    t-att-value="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty" />
+            </t>
+        </xpath>
+
+        <xpath expr="//div[@id='cart_products']//div[hasclass('flex-grow-1')]" position='inside'>
+            <div t-if="line.product_id.product_tmpl_id.is_room_type">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="mb-1 bi bi-people" viewBox="0 0 16 16">
+                    <path
+                        d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+                </svg>
+                <strong
+                    class="pr-2 text-dark">No. of Guest:</strong>
+                <t
+                    t-esc="line.product_id.max_adult" /> adults, <t
+                    t-esc="line.product_id.max_child" /> child </div>
+        </xpath>
+    </template>
+
+    <template id='variants_inherit' inherit_id='website_sale.variants'>
+        <!-- Auto Room Selection >> Show or Hide -->
+        <xpath expr="//ul"
+            position="before">
+            <t t-set="auto_selection_check"
+                t-value="False if (env['ir.config_parameter'].sudo().get_param('hotel_management_system.auto_room_selection') and product.is_room_type ) else True" />
+        </xpath>
+
+        <xpath expr="//ul"
+            position="attributes">
+            <attribute name="t-attf-class">
+                list-unstyled js_add_cart_variants mb-0 #{ul_class} #{'d-none' if not auto_selection_check else ''}
+            </attribute>
+        </xpath>
+
+        <xpath expr="//ul//t[@t-foreach='product.valid_product_template_attribute_line_ids']/li"
+            position="attributes">
+            <attribute name="t-attf-class">
+                variant_attribute #{'d-none' if (len(ptal.product_template_value_ids._only_active())
+                == 1 and not ptal.product_template_value_ids._only_active()[0].is_custom) or not
+                ptal.attribute_id.website_visible else ''}
+            </attribute>
+        </xpath>
+    </template> 
+
+    <template id="hotel_list" name="Hotels Dropdown">
+        <div t-attf-class="o_hotels_dropdown dropdown">
+            <a role="button" href="#" t-attf-class="dropdown-toggle btn btn-light" data-bs-toggle="dropdown">
+                <t t-esc="hotel" />
+            </a>
+            <div class="dropdown-menu" role="menu">
+                <a role="menuitem" t-attf-class="dropdown-item {{ 'active' if 0 == hotel_id else '' }}" t-att-href="keep('/shop', hotel_id=0)">
+                    <span t-esc="'ALL'"/>
+                </a>
+                <t t-foreach="hotels" t-as="hotel">
+                    <a t-attf-class="dropdown-item {{ 'active' if hotel.id == hotel_id else '' }}" 
+                    role="menuitem" t-att-href="keep('/shop', hotel_id=hotel.id)">
+                        <span t-esc="hotel.name"/>
+                    </a>
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="hotel_website_sale_products" inherit_id="website_sale.products">
+        <xpath expr="//div[@id='wrap']" position="before">
+            <t t-set="hotels" t-value="request.env['hotel.hotels'].search([
+                ('is_published', '=', True), 
+                '|', 
+                ('website_id', '=', request.website.id), 
+                ('website_id', '=', False)
+            ])"/>
+            <t t-if="request.params.get('hotel_id')">
+                <t t-set="hotel_id" t-value="int(request.params.get('hotel_id'))"/>
+            </t>
+            <t t-else="">
+                <t t-set="hotel_id" t-value="0"/>
+            </t>
+            <t t-if="hotel_id">
+                <t t-set="hotel" t-value="hotel_id and hotels.sudo().browse(hotel_id).name or 'ALL'"/>
+            </t>
+            <t t-else="">
+                <t t-set="hotel" t-value="'ALL'"/>
+            </t>
+        </xpath>
+
+        <xpath expr="//*[@t-call='website_sale.pricelist_list']" position="after">
+            <t t-call="hotel_management_system.hotel_list"></t>
+        </xpath>
+    </template>
+
+    <template id="hotel_website_sale_products_attributes" inherit_id="website_sale.products_attributes">
+        <xpath expr="//input[contains(@name, 'category')]" position="before">
+            <input type="hidden" name="hotel_id" t-att-value="hotel_id"/>
+        </xpath>
+    </template>
+
+    <template id="hotel_template" name="Hotel Listing Page">
+        <t t-call="website.layout">
+            <div class="hotel-container oe_structure container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="hotel-head">
+                        Hotels
+                    </div>
+                    <div>
+                        <button id="gridViewBtn" class="btn toggle-btn active" onclick="toggleView('grid')">
+                            <i class="fa fa-th-large"></i>
+                        </button>
+                        <button id="listViewBtn" class="btn toggle-btn" onclick="toggleView('list')">
+                            <i class="fa fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+    
+                <div id="hotel-view" class="row hotel-grid-view">
+                    <t t-foreach="hotels" t-as="hotel">
+                        <div class="hotel-item col-md-4 mb-4 d-flex">
+                            <a t-att-href="'/hotel/%s' % slug(hotel)" class="text-decoration-none d-flex w-100" style="flex:1;">
+                                <div class="card hotel-card d-flex w-100">
+                                    <div class="hotel-main-sec">
+                                        <div class="hotel-image-wrapper">
+                                            <img t-attf-src="/web/image/hotel.hotels/{{hotel.id}}/banner" class="card-img-top" alt="Hotel Image"/>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><t t-out="hotel.name"/></h5>
+                                            <p t-if="hotel.tagline" class="card-text hotel-tagline">
+                                                <t t-out="hotel.tagline"/>
+                                            </p>
+                                            <p t-if="hotel.address" class="card-text hotel-address d-flex">
+                                                <i class="fa fa-map-marker"></i>
+                                                <t t-out="hotel.address"/>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="hotel-footer-sec d-flex justify-content-between align-items-center p-3">
+                                        <t t-if="hotel.rating_avg">
+                                            <t t-call="portal_rating.rating_widget_stars_static">
+                                                <t t-set="rating_avg" t-value="hotel.rating_avg"/>
+                                                <t t-set="rating_count" t-value="hotel.rating_count"/>
+                                            </t>
+                                        </t>
+
+                                        <span class="hotel-price">
+                                            Price Starting from <t t-out="min(hotel.room_ids.mapped('list_price') or [0.0])"/> <t t-out="hotel.currency_id.symbol"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </t>
+                </div>
+            </div>
+    
+            <script>
+                function toggleView(view) {
+                    const container = document.getElementById('hotel-view');
+                    const gridBtn = document.getElementById('gridViewBtn');
+                    const listBtn = document.getElementById('listViewBtn');
+    
+                    if (view === 'list') {
+                        container.classList.remove('hotel-grid-view');
+                        container.classList.add('hotel-list-view');
+    
+                        listBtn.classList.add('active');
+                        gridBtn.classList.remove('active');
+                    } else {
+                        container.classList.remove('hotel-list-view');
+                        container.classList.add('hotel-grid-view');
+    
+                        gridBtn.classList.add('active');
+                        listBtn.classList.remove('active');
+                    }
+                }
+            </script>
+        </t>
+    </template>
+
+    <template id="hotel_detail_template" name="Hotel Detail Page">
+        <t t-call="website.layout">
+            <div>
+                <div class="container mt-5 hotel-detail-page">
+                    <div class="mb-3">
+                        <a class="fw-bold" href="/hotels">Hotels</a> / <t class="text-muted" t-out="hotel.name"/>
+                    </div>
+
+                    <div class="row align-items-start upper-container">
+                        <div class="col-lg-8">
+                            <t t-if="hotel.hotel_image_ids">
+                                <div id="hotelImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner" style="border-radius: 10px;">
+                                        <t t-set="first" t-value="True"/>
+                                        <t t-foreach="hotel.hotel_image_ids" t-as="product_image">
+                                            <div t-attf-class="carousel-item #{'active' if first else ''}">
+                                                <t t-set="first" t-value="False"/>
+                                                <img t-att-src="'/web/image/product.image/%s/image_1920' % product_image.id" class="d-block w-100" alt="Hotel Image"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#hotelImageCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#hotelImageCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </t>
+                            <t t-elif="hotel.banner">
+                                <img t-att-src="'/web/image/hotel.hotels/%s/banner' % hotel.id" class="d-block w-100" alt="Hotel Image"/>
+                            </t>
+                        </div>
+
+                        <div class="col-lg-4 d-flex flex-column" style="height: 100%;">
+                            <div class="hotel-info-card flex-grow-1">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img t-att-src="'/web/image/hotel.hotels/%s/image' % hotel.id"
+                                        class="hotel-logo"/>
+                                    <h3 class="hotel-name mb-0"><t t-out="hotel.name"/></h3>
+
+                                    <div t-if="hotel.rating_avg" style="margin-left: auto;">
+                                        <a class="text-decoration-none" href="#customer-reviews">
+                                            <t t-call="portal_rating.rating_widget_stars_static">
+                                                <t t-set="rating_avg" t-value="hotel.rating_avg"/>
+                                                <t t-set="rating_count" t-value="hotel.rating_count"/>
+                                            </t>
+                                        </a>
+                                    </div>
+                                </div>
+                                <p class="hotel-address">
+                                    <i class="fa fa-map-marker"></i>
+                                    <t t-out="hotel.address or 'Address not available'"/>
+                                </p>
+                                <div class="hotel-map">
+                                    <iframe style="height: 100%;" t-attf-src="https://www.google.com/maps?q={{hotel.address}}&amp;output=embed"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-start">
+                        <div class="col-lg-8">
+                            <div class="hotel-menu">
+                                <ul>
+                                    <li><a class="active-underline" href="#about-hotel">About</a></li>
+                                    <li><a href="#hotel-policies">Policies</a></li>
+                                    <li><a href="#hotel-services">Services</a></li>
+                                    <li><a href="#customer-reviews">Reviews</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="hotel-description hotel-section" id="about-hotel">
+                                <h3>About This Hotel</h3>
+                                <p><t t-out="hotel.description or 'No description available.'"/></p>
+                            </div>
+
+                            <div class="hotel-policies hotel-section" id="hotel-policies">
+                                <h3>Hotel Policies</h3>
+                                <span style="white-space:break-spaces;"><t t-out="hotel.policies or 'No policies available.'"/></span>
+                            </div>
+
+                            <div class="hotel-services hotel-section mt-4" id="hotel-services">
+                                <h3 class="mb-3">Services &#38; Amenities</h3>
+                                <div class="row">
+                                    <t t-foreach="hotel.service_ids" t-as="srv">
+                                        <div class="col-6 col-md-4 mb-2">
+                                            <div class="d-flex align-items-center p-2 shadow-sm rounded service-box bg-white h-100">
+                                                <img t-att-src="'/web/image/hotel.service/%s/logo' % srv.id"
+                                                    class="me-2"
+                                                    style="height:40px;width:40px;object-fit:cover;" />
+                                                <span class="text-truncate"><t t-out="srv.name"/></span>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-foreach="hotel.facility_ids" t-as="fac">
+                                        <div class="col-6 col-md-4 mb-2">
+                                            <div class="d-flex align-items-center p-2 shadow-sm rounded service-box bg-white h-100">
+                                                <img t-att-src="'/web/image/hotel.facility/%s/logo' % fac.id"
+                                                    class="me-2"
+                                                    style="height:40px;width:40px;object-fit:cover;" />
+                                                <span class="text-truncate"><t t-out="fac.name"/></span>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div class="o_shop_discussion_rating" data-anchor='true' id='customer-reviews'>
+                                <section id="o_product_page_reviews" class="container pt32 pb32" data-anchor='true'>
+                                    <a class="o_product_page_reviews_title d-flex justify-content-between text-decoration-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#o_product_page_reviews_content" aria-expanded="false" aria-controls="o_product_page_reviews_content">
+                                        <h3 class="mb32">Customer Reviews</h3>
+                                        <i class="fa align-self-start"/>
+                                    </a>
+                                    <div id="o_product_page_reviews_content" class="collapse">
+                                        <t t-call="portal.message_thread">
+                                            <t t-set="object" t-value="hotel"/>
+                                            <t t-set="display_rating" t-value="True"/>
+                                            <t t-set="message_per_page" t-value="5"/>
+                                            <t t-set="two_columns" t-value="true"/>
+                                        </t>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="hotel-info-card flex-grow-1">
+                                <p class="hotel-address" style="font-weight: 600;">
+                                    <t t-out="hotel.tagline"/>
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <span class="hotel-address" style="font-weight: 500;">Price Starting From</span>
+                                    <span class="hotel-price">
+                                        <t t-out="min(hotel.room_ids.mapped('list_price') or [0.0])"/> <t t-out="hotel.currency_id.symbol"/>
+                                    </span>
+                                </div>
+
+                                <div class="card-review-section mt-3">
+                                    <div class="review-container overflow-auto">
+                                        <t t-set="visible_ratings" t-value="hotel.sudo().rating_ids[:hotel.review_display_limit]"/>
+                                        <t t-foreach="visible_ratings" t-as="rating">
+                                            <t t-if="rating.feedback">
+                                                <div class="review-item d-flex gap-2 align-items-center p-2 mb-2">
+                                                    <img t-att-src="rating.rating_image_url" alt="★" class="rounded-circle" style="width: 30px; height: 30px; margin-top: 2px;"/>
+                                                    <p class="mb-0 small text-break">
+                                                        <t t-out="rating.feedback"/>
+                                                    </p>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div class="hotel-contact-card">
+                                    <div class="contact-item">
+                                        <i class="fa fa-phone contact-icon"></i>
+                                        <span class="contact-value"><t t-out="hotel.sudo().partner_id.phone or 'N/A'"/></span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fa fa-envelope contact-icon"></i>
+                                        <span class="contact-value"><t t-out="hotel.partner_id.email or 'N/A'"/></span>
+                                    </div>
+                                    <div class="contact-item" t-if="hotel.partner_id.website">
+                                        <i class="fa fa-globe contact-icon"></i>
+                                        <span class="contact-value">
+                                            <a t-att-href="'http://' + hotel.partner_id.website" target="_blank">
+                                                <t t-out="hotel.partner_id.website or 'N/A'"/>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <a class="btn btn-primary" style="color: white;background: #13446f;border: 0;" t-att-href="'/shop?hotel_id=%s' % hotel.id">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="oe_structure oe_empty oe_structure_not_nearest" id="oe_structure_hotel_page_2"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

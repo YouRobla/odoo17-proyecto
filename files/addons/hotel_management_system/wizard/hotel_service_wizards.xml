@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record id="view_hotel_service_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.service.wizard.form</field>
+        <field name="model">hotel.service.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Service">
+                <field name="booking_id" invisible="1" />
+                <field name="service_type" invisible="1" />
+
+                <group>
+                    <group>
+                        <field name="booking_line_id" required="1" />
+                        <field name="service_id" required="1" />
+                        <!-- <field name="service_type" invisible="service_type == 'free' or not service_id" /> -->
+                    </group>
+                    <group>
+                        <field name="assign_to" required="service_type == 'paid'" />
+                        <field name="amount" widget="monetary" invisible="not service_id or service_type == 'free'" />
+                    </group>
+                    <group>
+                        <field name="note" invisible='not service_id' />
+                    </group>
+                </group>
+                <footer>
+                    <button string="Add Service" type="object" name="action_add_service"
+                        class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

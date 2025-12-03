@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_booking_form_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.form.extension</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="hotel_management_system.hotel_booking_view_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Actualizar la barra de estado para incluir los 8 estados principales -->
+            <xpath expr="//field[@name='status_bar'][@widget='statusbar']" position="attributes">
+                <attribute name="statusbar_visible">initial,confirmed,checkin,checkout,cleaning_needed,room_ready,cancelled,no_show</attribute>
+            </xpath>
+            
+            <!-- Añadir nuevos botones después del botón "Allot Room" -->
+            <xpath expr="//button[@name='allot_action']" position="after">
+                
+                <!-- Botón Check-in: visible solo cuando el estado sea 'confirmed' -->
+                <button name="action_check_in" 
+                        string="Check-in" 
+                        type="object"
+                        class="oe_highlight"
+                        invisible="status_bar != 'confirmed'"
+                        icon="fa-sign-in"/>
+                
+                <!-- Botón Realizar Check-out: visible solo en el estado 'checkin' -->
+                <button name="action_checkout" 
+                        string="Realizar Check-out" 
+                        type="object"
+                        class="oe_highlight"
+                        invisible="status_bar != 'checkin'"
+                        confirm="¿Confirmar que el huésped ha salido de la habitación?"
+                        icon="fa-sign-out"/>
+                
+                <!-- Botón No Show: visible solo en estado 'confirmed' -->
+                <button name="action_no_show" 
+                        string="No Show" 
+                        type="object"
+                        class="btn-danger"
+                        invisible="status_bar != 'confirmed'"
+                        confirm="¿Confirmar que el huésped no se presentó?"
+                        icon="fa-times-circle"/>
+                
+                <!-- Botón Create Invoice: visible solo en estado 'checkout' y 'cleaning_needed' -->
+                <button name="create_invoice" 
+                        string="Create Invoice"
+                        type="object" 
+                        class="oe_highlight"
+                        invisible="not (status_bar in ('checkout', 'cleaning_needed') and invoice_count == 0 and not is_show_create_invoice_btn)"
+                        icon="fa-file-text-o"/>
+                
+                <!-- Botón Habitación Lista: visible solo en estado 'cleaning_needed' -->
+                <button name="action_mark_room_ready" 
+                        string="Habitación Lista" 
+                        type="object"
+                        class="btn-success"
+                        invisible="status_bar != 'cleaning_needed'"
+                        confirm="¿Confirmar que la habitación está limpia y lista para nuevos huéspedes?"
+                        icon="fa-check-circle"/>
+                
+                <!-- Botón Regresar a Borrador: visible en estados 'cancelled', 'no_show' -->
+                <button name="action_set_to_draft" 
+                        string="Regresar a Borrador" 
+                        type="object"
+                        class="btn-secondary"
+                        invisible="status_bar not in ('cancelled', 'no_show')"
+                        confirm="¿Confirmar regresar la reserva a estado borrador?"
+                        icon="fa-undo"/>
+
+                <!-- Botón Print Bill: visible en estados apropiados del módulo hijo -->
+                <button name="action_view_compute_bill" 
+                        string="Print Bill"
+                        type="object"
+                        class="btn-info"
+                        invisible="status_bar not in ('checkin', 'checkout', 'cleaning_needed', 'room_ready', 'allot')"
+                        icon="fa-print"/>
+                
+                <!-- Botón Sincronizar Servicios: visible solo en reservas con cambio de habitación -->
+                <button name="action_sync_services_to_sale_orders" 
+                        string="Sincronizar Servicios"
+                        type="object"
+                        class="btn-warning"
+                        invisible="not is_sync_services_allowed"
+                        confirm="¿Sincronizar servicios adicionales (Early Check-in, Late Check-out, Servicios Manuales) con las órdenes de venta?"
+                        icon="fa-refresh"/>
+                
+            </xpath>
+            
+            <!-- Añadir campos computados para la lógica de botones -->
+            <xpath expr="//field[@name='show_create_bill_btn']" position="after">
+                <field name="is_check_in_allowed" invisible="1"/>
+                <field name="is_checkout_allowed" invisible="1"/>
+                <field name="is_cancellation_allowed" invisible="1"/>
+                <field name="is_sync_services_allowed" invisible="1"/>
+                <field name="motivo_viaje" invisible="1"/>
+                <field name="early_checkin_charge" invisible="1"/>
+            </xpath>
+            
+            <!-- Modificar el campo check_in para que sea editable cuando early_checkin_charge tenga valor -->
+            <xpath expr="//field[@name='check_in']" position="attributes">
+                <attribute name="readonly">status_bar != 'initial' and not (early_checkin_charge and early_checkin_charge > 0)</attribute>
+            </xpath>
+            
+            
+            <!-- Ocultar el botón Confirm Booking en reservas nuevas (sin ID) -->
+            <xpath expr="//button[@name='action_confirm_booking']" position="attributes">
+                <attribute name="invisible">status_bar != 'initial' or not id</attribute>
+            </xpath>
+            
+            <!-- Ocultar el botón Cancel en reservas nuevas (sin ID) y mejorar su apariencia -->
+            <xpath expr="//button[@name='%(hotel_management_system.action_view_cancel_booking)d']" position="attributes">
+                <attribute name="class">btn-danger</attribute>
+                <attribute name="string">Cancelar</attribute>
+                <attribute name="confirm">¿Confirmar la cancelación de la reserva?</attribute>
+                <attribute name="icon">fa-ban</attribute>
+                <attribute name="invisible">not id</attribute>
+            </xpath>
+            
+            <!-- Agregar el botón Add Services en la sección de botones stat -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_inline oe_stat_button pr-2" name="action_add_service"
+                        type="object" invisible="status_bar != 'checkin'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                        fill="currentColor" class="bi bi-shop-window me-2"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5z"></path>
+                    </svg>
+                    Add Services</button>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Extensión de la Vista de Lista para Mostrar Nuevos Estados -->
+    <record id="view_hotel_booking_tree_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.tree.extension</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="hotel_management_system.hotel_booking_view_tree"/>
+        <field name="arch" type="xml">
+            
+            <!-- Usar decoraciones estándar con CSS personalizado -->
+            <xpath expr="//field[@name='status_bar']" position="attributes">
+                <attribute name="decoration-muted">status_bar in ('initial', 'draft')</attribute>
+                <attribute name="decoration-info">status_bar in ('confirmed')</attribute>
+                <attribute name="decoration-warning">status_bar in ('cleaning_needed')</attribute>
+                <attribute name="decoration-success">status_bar in ('checkin', 'room_ready')</attribute>
+                <attribute name="decoration-danger">status_bar in ('cancelled', 'no_show')</attribute>
+            </xpath>
+            
+            <!-- Agregar campos de descuento en la vista de lista -->
+            <xpath expr="//field[@name='status_bar']" position="after">
+                <field name="original_price" widget="monetary" optional="hide"/>
+                <field name="discount_amount" widget="monetary" optional="hide"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Extensión de la Vista de Búsqueda para Nuevos Filtros -->
+    <record id="view_hotel_booking_filter_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.filter.extension</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="hotel_management_system.view_hotel_booking_filter"/>
+        <field name="arch" type="xml">
+            
+            <!-- Añadir filtros para los 8 estados principales -->
+            <xpath expr="//filter[@name='checkout']" position="after">
+                
+                <!-- Filtros para los 8 estados principales -->
+                <filter string="Confirmada" 
+                        name="confirmed" 
+                        domain="[('status_bar','=','confirmed')]" />
+                
+                <filter string="Check-in" 
+                        name="checkin" 
+                        domain="[('status_bar','=','checkin')]" />
+                
+                <filter string="Limpieza Necesaria" 
+                        name="cleaning_needed" 
+                        domain="[('status_bar','=','cleaning_needed')]" />
+                
+                <filter string="Habitación Lista" 
+                        name="room_ready" 
+                        domain="[('status_bar','=','room_ready')]" />
+                
+                <filter string="No Show" 
+                        name="no_show" 
+                        domain="[('status_bar','=','no_show')]" />
+                
+                <filter string="Cancelada" 
+                        name="cancelled" 
+                        domain="[('status_bar','=','cancelled')]" />
+                
+            </xpath>
+            
+            <!-- Añadir filtros especiales para el flujo de trabajo -->
+            <xpath expr="//filter[@name='checkout_today']" position="after">
+                
+                <separator/>
+                
+                <!-- Filtros para el flujo de trabajo optimizado -->
+                <filter string="Reservas Confirmadas" 
+                        name="confirmed_bookings" 
+                        domain="[('status_bar','=','confirmed')]" />
+                
+                <filter string="Huéspedes en Habitación" 
+                        name="guests_in_room" 
+                        domain="[('status_bar','=','checkin')]" />
+                
+                <filter string="Habitaciones en Limpieza" 
+                        name="rooms_cleaning" 
+                        domain="[('status_bar','=','cleaning_needed')]" />
+                
+                <filter string="Habitaciones Listas" 
+                        name="rooms_ready" 
+                        domain="[('status_bar','=','room_ready')]" />
+                
+                <filter string="Reservas Problemáticas" 
+                        name="problematic_bookings" 
+                        domain="[('status_bar','in',['cancelled','no_show'])]" />
+                
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Acciones de Cliente para el Dashboard Gantt -->
+    <!-- Las acciones y menús se han movido a calendar_views.xml -->
+
+    <!-- Extensión de la Vista del Formulario de Línea de Reserva -->
+    <record id="view_hotel_booking_line_form_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.line.form.extension</field>
+        <field name="model">hotel.booking.line</field>
+        <field name="inherit_id" ref="hotel_management_system.custom_hotel_booking_line_view_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Hacer que el campo guest_info_ids NO sea requerido en la vista personalizada -->
+            <xpath expr="//field[@name='guest_info_ids']" position="attributes">
+                <attribute name="required">0</attribute>
+            </xpath>
+            
+            <!-- Permitir guardar sin mostrar el warning -->
+            <xpath expr="//button[@special='save']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            
+            <!-- Pre-llenar el campo product_id con el contexto -->
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="context">{'default_hotel_id': context.get('default_hotel_id')}</attribute>
+            </xpath>
+            
+            <!-- Personalizar el botón Cancel para usar nuestro método -->
+            <xpath expr="//button[@special='cancel']" position="attributes">
+                <attribute name="name">action_cancel_add_rooms</attribute>
+                <attribute name="type">object</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Vista de formulario para añadir costos extras -->
+    <record id="view_hotel_booking_service_line_form" model="ir.ui.view">
+        <field name="name">hotel.booking.service.line.form</field>
+        <field name="model">hotel.booking.service.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="service_id"/>
+                    <field name="product_id"/>
+                    <field name="amount"/>
+                    <field name="note"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista para añadir botón en la pestaña de servicios -->
+    <record id="view_hotel_booking_form_service_lines_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.form.service.lines.extension</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="hotel_management_system.hotel_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_add_service']" position="after">
+                <button name="action_add_extra_service"
+                        type="object"
+                        class="btn-primary"
+                        string="Añadir Cargo Manual"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <!-- Extensión de la Vista del Formulario Principal de Reserva -->
+    <record id="view_hotel_booking_form_partner_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.form.partner.extension</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="hotel_management_system.hotel_booking_view_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Hacer que el campo partner_id NO sea requerido en la vista -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="required">0</attribute>
+            </xpath>
+            
+            <!-- Agregar el campo motivo_viaje después del campo partner_id -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="motivo_viaje" placeholder="Ej: Negocios, Turismo, Familia, etc."/>
+            </xpath>
+            
+            
+            <!-- Agregar campos de descuento y precio original en una nueva pestaña (simplificada) -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Información de Precios" name="pricing_info">
+                    <!-- Sección 1: Precios Base y Descuentos -->
+                    <group>
+                        <group string="Precios Base">
+                            <field name="original_price" 
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   string="Precio Original de Habitaciones"/>
+                        </group>
+                        <group string="Descuentos Aplicados">
+                            <field name="discount_amount" 
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   string="Monto Descontado"/>
+                            <field name="discount_reason" 
+                                   placeholder="Especifique la razón del descuento o cambio de precio..."
+                                   string="Razón del Descuento"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Sección 2: Servicios Especiales (Simplificada) -->
+                    <group>
+                        <group string="Servicios Especiales">
+                            <field name="early_checkin_charge" 
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   string="Early Check-in"
+                                   invisible="status_bar not in ['confirmed', 'checkin', 'checkout']"/>
+                            <field name="late_checkout_charge" 
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   string="Late Check-out"
+                                   invisible="status_bar not in ['checkin', 'checkout']"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Sección 3: Servicios Manuales (Simplificada) -->
+                    <group>
+                        <group string="Servicios Adicionales">
+                            <field name="manual_service_description" 
+                                   string="Descripción" 
+                                   placeholder="Ej: Lavandería, Minibar, etc."/>
+                            <field name="manual_service_amount" 
+                                   string="Costo"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <button name="action_add_manual_service" 
+                                    type="object" 
+                                    string="Agregar" 
+                                    class="btn-primary"
+                                    icon="fa-plus"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Lista de servicios agregados (simplificada) -->
+                    <field name="manual_service_lines" 
+                           widget="one2many" 
+                           nolabel="1"
+                           context="{'default_booking_id': active_id}">
+                        <tree editable="false" create="false" delete="false">
+                            <field name="note" string="Descripción"/>
+                            <field name="amount" string="Costo" widget="monetary"/>
+                        </tree>
+                    </field>
+                    
+                    <!-- Total final (simplificado) -->
+                    <group>
+                        <group string="Total">
+                            <field name="total_amount" 
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   string="Total Final"
+                                   readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            
+            <!-- Cambiar el botón Add Rooms para usar nuestro método personalizado -->
+            <xpath expr="//button[@name='action_add_rooms']" position="attributes">
+                <attribute name="name">action_add_rooms_with_context</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Elementos de Menú -->
+    <menuitem id="menu_dashboard_calendar_view"
+              name="Vista Dashboard Calendar"
+              sequence="3"
+              parent="hotel_management_system.menu_hotel_dashboard_root"
+              action="action_dashboard_gantt_view"/>
+
+    <!-- Vista para Mostrar Estado de Habitación en Productos -->
+    <record id="view_product_template_form_room_status" model="ir.ui.view">
+        <field name="name">product.template.form.room.status</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            
+            <!-- Agregar campo de estado de habitación después del campo is_room_type -->
+            <xpath expr="//field[@name='is_room_type']" position="after">
+                <field name="computed_room_status" 
+                       invisible="is_room_type == False"
+                       widget="badge"
+                       options="{'classes': {'available': 'success', 'occupied': 'danger', 'dirty': 'warning', 'maintenance': 'info'}}"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Vista para Mostrar Estado de Habitación en Productos Individuales -->
+    <record id="view_product_product_form_room_status" model="ir.ui.view">
+        <field name="name">product.product.form.room.status</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            
+            <!-- Agregar campo de estado de habitación después del campo is_room_type -->
+            <xpath expr="//field[@name='is_room_type']" position="after">
+                <field name="room_status" 
+                       invisible="is_room_type == False"
+                       widget="badge"
+                       options="{'classes': {'available': 'success', 'occupied': 'danger', 'cleaning': 'warning', 'maintenance': 'info', 'blocked': 'secondary'}}"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Extensión para agregar el botón Exchange Room en las líneas de booking -->
+    <record id="view_hotel_booking_form_exchange_room_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.form.exchange.room.extension</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="hotel_management_system.hotel_booking_view_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Agregar los campos computed como campos invisibles para usarlos en modifiers -->
+            <xpath expr="//field[@name='status_bar']" position="after">
+                <field name="is_room_change_allowed" invisible="1"/>
+                <field name="is_cleaning_request_allowed" invisible="1"/>
+                <field name="split_from_booking_id" readonly="1"/>
+            </xpath>
+            
+            <!-- Agregar botón para navegar a la reserva original -->
+            <xpath expr="//header" position="inside">
+                <button name="action_view_original_booking"
+                        type="object"
+                        string="Ver Reserva Original"
+                        class="btn-info"
+                        icon="fa-arrow-left"
+                        invisible="not split_from_booking_id"
+                        help="Navegar a la reserva original de la que se originó este cambio de habitación"/>
+            </xpath>
+            
+            <!-- Agregar el botón Change Room en la vista tree de booking_line_ids -->
+            <xpath expr="//field[@name='booking_line_ids']//tree//field[@name='status_bar']" position="after">
+                <button name="action_open_change_room_wizard"
+                        type="object"
+                        title="Change Room" 
+                        string="Change Room"
+                        class="oe_highlight"
+                        icon="fa-exchange"
+                        invisible="not parent.is_room_change_allowed"/>
+            </xpath>
+
+            <!-- Agregar botón LIMPIEZA NECESARIA en el header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_request_cleaning"
+                        type="object"
+                        string="LIMPIEZA NECESARIA"
+                        class="btn-warning"
+                        icon="fa-broom"
+                        invisible="not is_cleaning_request_allowed"/>
+            </xpath>
+
+            <!-- Campo "Precio Base" eliminado - información innecesaria en la tabla -->
+
+            
+        </field>
+    </record>
+    
+    <!-- ============================================================================= -->
+    <!-- VISTA PARA MODAL ADD ROOMS - SELECTOR DE CONTACTOS -->
+    <!-- ============================================================================= -->
+    
+    <record id="view_add_rooms_form_contact_extension" model="ir.ui.view">
+        <field name="name">add.rooms.form.contact.extension</field>
+        <field name="model">hotel.booking.line</field>
+        <field name="inherit_id" ref="hotel_management_system.custom_hotel_booking_line_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Reemplazar el campo name por partner_id en la pestaña Members Details -->
+            <xpath expr="//field[@name='guest_info_ids']//field[@name='name']" position="replace">
+                <field name="partner_id" 
+                       string="Contacto" 
+                       required="1"
+                       context="{'res_partner_search_mode': 'customer'}"
+                       options="{'no_create': False, 'no_open': False}"/>
+            </xpath>
+            
+            <!-- Hacer el campo price de solo lectura para que no sea editable -->
+            <xpath expr="//field[@name='price']" position="replace">
+                <field name="price" string="Price Per Night" readonly="1"/>
+            </xpath>
+            
+            <!-- Añadir campos de descuento después del campo price -->
+            <xpath expr="//field[@name='price']" position="after">
+                <field name="original_price" readonly="1" string="Precio Original"/>
+                <field name="discount_amount" readonly="1" string="Monto Descontado"/>
+            </xpath>
+            
+            <!-- Añadir botón en el footer del formulario -->
+            <xpath expr="//footer" position="inside">
+                <button name="action_open_price_change_wizard"
+                        type="object"
+                        class="btn-info"
+                        string="Cambiar Precio"
+                        icon="fa-edit"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Vista para reemplazar el campo name por partner_id en la pestaña Members Details -->
+    <record id="view_hotel_booking_line_form_contact_extension" model="ir.ui.view">
+        <field name="name">hotel.booking.line.form.contact.extension</field>
+        <field name="model">hotel.booking.line</field>
+        <field name="inherit_id" ref="hotel_management_system.hotel_booking_line_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Reemplazar el campo name por partner_id en la pestaña Members Details -->
+            <xpath expr="//field[@name='guest_info_ids']//field[@name='name']" position="replace">
+                <field name="partner_id" 
+                       string="Contacto" 
+                       required="1"
+                       context="{'res_partner_search_mode': 'customer'}"
+                       options="{'no_create': False, 'no_open': False}"/>
+            </xpath>
+        </field>
+    </record>    
+</odoo>
